@@ -1,35 +1,27 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import json
-import logging
 from datetime import datetime
-from typing import List, Dict, Any
+import contextlib
+from typing import Optional
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from database.database import get_db, engine, Base
-from database.models import Strategy, Trade, BacktestResult
-from services.strategy_manager import StrategyManager
-from services.ibkr_service import IBKRService
-from services.market_data_service import MarketDataService
-from services.risk_manager import RiskManager
-from services.backtesting_engine import BacktestingEngine
-from api.routes import strategies, trades, backtesting, account
-from websocket.connection_manager import ConnectionManager
+from .core.config import settings
+from .core.logger import get_logger, shutdown_logging
+from .database.database import engine, Base
+from .services.strategy_engine.rule_based import StrategyManager
+from .services.broker.ibkr_service import IBKRService
+from .services.market_data.market_data_service import MarketDataService
+from .services.risk_manager.risk_manager import RiskManager
+from .services.backtesting.engine import BacktestingEngine
+from .api.routes import strategies, trades, backtesting, account
+from .websocket.connection_manager import ConnectionManager
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/trading_app.log'),
-        logging.StreamHandler()
-    ]
-)
+logger = get_logger(__name__)
+market_data_task: Optional[asyncio.Task] = None
 
-logger = logging.getLogger(__name__)
-
-app = FastAPI(title="AI Forex Trading Dashboard", version="1.0.0")
+app = FastAPI(title=settings.app_name, version="1.0.0")
 
 # CORS middleware
 app.add_middleware(
@@ -57,21 +49,35 @@ app.include_router(account.router, prefix="/api/account", tags=["account"])
 @app.on_event("startup")
 async def startup_event():
     """Initialize application on startup"""
+    global market_data_task
+
     # Create database tables
     Base.metadata.create_all(bind=engine)
     
     # Initialize IBKR connection
-    await ibkr_service.initialize()
+    try:
+        await ibkr_service.connect()
+    except Exception as exc:
+        logger.error("Failed to establish broker connection: %s", exc)
     
     # Start market data streaming
-    asyncio.create_task(stream_market_data())
+    market_data_task = asyncio.create_task(stream_market_data())
     
     logger.info("Trading dashboard started successfully")
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Clean up on shutdown"""
+    global market_data_task
+
+    if market_data_task:
+        market_data_task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await market_data_task
+        market_data_task = None
+
     await ibkr_service.disconnect()
+    shutdown_logging()
     logger.info("Trading dashboard shut down")
 
 @app.websocket("/ws")
@@ -145,4 +151,4 @@ async def health_check():
     }
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)

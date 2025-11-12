@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from database.database import get_db
-from database.models import Strategy
-from services.strategy_manager import StrategyManager
+from ...database.database import get_db
+from ...database.models import Strategy
+from ...services.strategy_engine.rule_based import StrategyManager
 from pydantic import BaseModel
 import os
 import shutil

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from database.database import get_db
-from database.models import Trade
-from services.ibkr_service import IBKRService
-from services.risk_manager import RiskManager
+from ...database.database import get_db
+from ...database.models import Trade
+from ...services.broker.ibkr_service import IBKRService
+from ...services.risk_manager.risk_manager import RiskManager
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -45,7 +45,7 @@ async def create_trade(trade_request: TradeRequest, db: Session = Depends(get_db
         )
     
     # Place order with IBKR
-    order_id = await ibkr_service.place_order(
+    order_response = await ibkr_service.place_order(
         symbol=trade_request.symbol,
         action=trade_request.action,
         quantity=trade_request.quantity,
@@ -55,7 +55,7 @@ async def create_trade(trade_request: TradeRequest, db: Session = Depends(get_db
         take_profit=trade_request.take_profit
     )
     
-    if not order_id:
+    if not order_response:
         raise HTTPException(status_code=500, detail="Failed to place order with broker")
     
     # Create trade record
@@ -77,7 +77,7 @@ async def create_trade(trade_request: TradeRequest, db: Session = Depends(get_db
     
     return {
         "trade_id": db_trade.id,
-        "order_id": order_id,
+        "order": order_response,
         "message": "Trade executed successfully",
         "risk_assessment": risk_assessment
     }
@@ -173,14 +173,14 @@ async def close_trade(trade_id: int, db: Session = Depends(get_db)):
     
     # Place closing order
     closing_action = 'SELL' if trade.action == 'BUY' else 'BUY'
-    order_id = await ibkr_service.place_order(
+    order_response = await ibkr_service.place_order(
         symbol=trade.symbol,
         action=closing_action,
         quantity=trade.quantity,
         order_type='MKT'
     )
     
-    if not order_id:
+    if not order_response:
         raise HTTPException(status_code=500, detail="Failed to close trade")
     
     # Update trade record

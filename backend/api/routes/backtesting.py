@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.database import get_db
-from services.backtesting_engine import BacktestingEngine
+from ...database.database import get_db
+from ...services.backtesting.engine import BacktestingEngine
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -56,7 +56,7 @@ async def get_backtest_results(strategy_id: int):
 def get_detailed_backtest_result(result_id: int, db: Session = Depends(get_db)):
     """Get detailed backtest result including equity curve and trades"""
     
-    from database.models import BacktestResult
+    from ...database.models import BacktestResult
     
     result = db.query(BacktestResult).filter(BacktestResult.id == result_id).first()
     

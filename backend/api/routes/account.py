@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from services.ibkr_service import IBKRService
-from services.risk_manager import RiskManager
-from pydantic import BaseModel
-from typing import Dict, Any
+from fastapi import APIRouter, HTTPException
 
+from ...services.broker.ibkr_service import IBKRService
+from ...services.risk_manager.risk_manager import RiskManager
+from pydantic import BaseModel
 router = APIRouter()
 ibkr_service = IBKRService()
 risk_manager = RiskManager()
@@ -109,7 +108,8 @@ async def reconnect_broker():
     """Attempt to reconnect to IBKR"""
     
     try:
-        success = await ibkr_service.initialize()
+        await ibkr_service.connect()
+        success = ibkr_service.is_connected()
         
         if success:
             return {"message": "Successfully reconnected to broker"}

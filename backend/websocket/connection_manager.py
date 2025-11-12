@@ -1,9 +1,10 @@
 from typing import List
 from fastapi import WebSocket
 import json
-import logging
 
-logger = logging.getLogger(__name__)
+from ..core.logger import get_logger
+
+logger = get_logger(__name__)
 
 class ConnectionManager:
     """Manages WebSocket connections"""
