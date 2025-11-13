@@ -1,0 +1,1 @@
+"""WebSocket connection manager scoped under AI Core API."""

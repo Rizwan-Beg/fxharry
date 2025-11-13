@@ -1,0 +1,12 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY frontend/package.json /app/package.json
+COPY frontend /app
+
+RUN npm ci
+
+# For development, expose Vite dev server; in production, you would build and serve statics via nginx
+EXPOSE 5173
+CMD ["npm", "run", "dev"]

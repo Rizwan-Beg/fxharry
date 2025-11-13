@@ -1,0 +1,1 @@
+"""Market data service namespace (temporary, to be offloaded to Node datafeed)."""

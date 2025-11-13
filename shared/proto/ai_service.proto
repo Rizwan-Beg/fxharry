@@ -1,0 +1,56 @@
+syntax = "proto3";
+package ai;
+
+// Basic messages
+message Empty {}
+
+message AccountSummary {
+  string status = 1;
+  string timestamp = 2;
+  string broker = 3;
+  double total_equity = 4;
+  double available_funds = 5;
+  double buying_power = 6;
+}
+
+message Position {
+  string symbol = 1;
+  double quantity = 2;
+  double avg_price = 3;
+  double market_value = 4;
+}
+
+message Positions {
+  repeated Position positions = 1;
+}
+
+message MarketStreamRequest {
+  repeated string symbols = 1;
+}
+
+message MarketDataUpdate {
+  string symbol = 1;
+  double bid = 2;
+  double ask = 3;
+  double last = 4;
+  string timestamp = 5;
+}
+
+message AISignalRequest {
+  int32 strategy_id = 1;
+  repeated string symbols = 2;
+}
+
+message AISignal {
+  string symbol = 1;
+  string signal_type = 2; // BUY, SELL, HOLD
+  double confidence = 3;
+  string timestamp = 4;
+}
+
+service AICoreService {
+  rpc GetAccountSummary(Empty) returns (AccountSummary);
+  rpc GetPositions(Empty) returns (Positions);
+  rpc StreamMarketData(MarketStreamRequest) returns (stream MarketDataUpdate);
+  rpc GenerateAISignal(AISignalRequest) returns (AISignal);
+}

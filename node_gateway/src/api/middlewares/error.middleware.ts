@@ -1,0 +1,20 @@
+/**
+ * Error Handling Middleware
+ * Centralized error handling for API routes
+ */
+
+import { Request, Response, NextFunction } from 'express';
+
+export function errorMiddleware(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  console.error('API Error:', err);
+  
+  res.status(500).json({
+    error: 'Internal server error',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+}

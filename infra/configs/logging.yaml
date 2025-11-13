@@ -1,0 +1,16 @@
+version: 1
+formatters:
+  json:
+    format: "%(asctime)s %(name)s %(levelname)s %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: json
+loggers:
+  ai_core:
+    level: INFO
+    handlers: [console]
+    propagate: false
+root:
+  level: INFO
+  handlers: [console]

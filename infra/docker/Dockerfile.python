@@ -1,0 +1,23 @@
+FROM python:3.12-slim
+
+# Install system dependencies required by common Python packages (psycopg2, grpc, etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY ai_core/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy source code
+COPY ai_core /app/ai_core
+COPY shared /app/shared
+
+# Default to launching the gRPC server; override with CMD in docker-compose for FastAPI
+ENV PYTHONUNBUFFERED=1
+EXPOSE 50051
+CMD ["python", "-m", "ai_core.grpc_server"]

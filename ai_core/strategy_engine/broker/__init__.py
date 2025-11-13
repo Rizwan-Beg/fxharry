@@ -1,0 +1,1 @@
+"""Legacy Python broker services (IBKR/Oanda/MT5/Binance)."""

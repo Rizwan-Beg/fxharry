@@ -1,63 +1,15 @@
-version: "3.11"
+# Main docker-compose.yml
+# This file references the docker-compose configuration in infra/docker/
+# For the full configuration, see: infra/docker/docker-compose.yml
+#
+# To run the stack:
+#   docker-compose -f infra/docker/docker-compose.yml up
+#
+# Or use the convenience script:
+#   ./scripts/start.sh
 
-services:
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: tradingdb
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+version: "3.9"
 
-  redis:
-    image: redis:7
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-  backend:
-    build:
-      context: ./backend
-    env_file:
-      - ./backend/.env.example
-    environment:
-      DATABASE_URL: postgresql://user:password@postgres:5432/tradingdb
-      REDIS_URL: redis://redis:6379/0
-    depends_on:
-      - postgres
-      - redis
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
-
-  frontend:
-    image: node:20
-    working_dir: /app
-    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-    env_file:
-      - ./backend/.env.example
-    depends_on:
-      - backend
-
-  worker:
-    build:
-      context: ./backend
-    command: ["celery", "-A", "backend.services", "worker", "--loglevel=INFO"]
-    env_file:
-      - ./backend/.env.example
-    depends_on:
-      - backend
-      - redis
-
-volumes:
-  postgres_data:
-  redis_data:
+# This file is kept for backward compatibility
+# The main docker-compose configuration is in infra/docker/docker-compose.yml
+# See that file for the complete service definitions
