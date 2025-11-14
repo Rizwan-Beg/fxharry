@@ -28,9 +28,11 @@ export function MarketOverview({ marketData = {} }: MarketOverviewProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {symbols.map((symbol) => {
           const data = marketData[symbol] || {};
-          const price = data.close || 0;
+          // Use mid price as the main price, fallback to close or bid
+          const price = data.mid || data.close || data.bid || 0;
+          // Calculate change from previous price (simplified - in production, track previous values)
           const change = data.change || 0;
-          const changePercent = data.change_percent || 0;
+          const changePercent = data.change_percent || (price > 0 ? (change / price) * 100 : 0);
           
           return (
             <div

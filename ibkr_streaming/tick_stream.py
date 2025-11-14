@@ -72,13 +72,30 @@ class TickStreamer:
 
     def get_ticks(self):
         """Retrieve current tick data for all subscribed symbols"""
+        import math
         ticks = {}
         for sym, ticker in self.subscribed.items():
             try:
-                bid = ticker.bid or 0
-                ask = ticker.ask or 0
-                mid = (bid + ask) / 2 if bid and ask else 0
-                spread = ask - bid if bid and ask else 0
+                # Get raw values and check for NaN/None
+                raw_bid = ticker.bid
+                raw_ask = ticker.ask
+                
+                # Filter out NaN, None, or invalid values
+                if raw_bid is None or (isinstance(raw_bid, float) and math.isnan(raw_bid)):
+                    continue  # Skip this tick if bid is invalid
+                if raw_ask is None or (isinstance(raw_ask, float) and math.isnan(raw_ask)):
+                    continue  # Skip this tick if ask is invalid
+                
+                bid = float(raw_bid)
+                ask = float(raw_ask)
+                
+                # Validate prices are positive and reasonable
+                if bid <= 0 or ask <= 0 or ask < bid:
+                    logger.warning(f"Invalid price data for {sym}: bid={bid}, ask={ask}")
+                    continue
+                
+                mid = (bid + ask) / 2.0
+                spread = ask - bid
 
                 ticks[sym] = {
                     "symbol": sym,
@@ -93,13 +110,6 @@ class TickStreamer:
                 logger.debug(f"Tick: {sym} | Bid: {bid} | Ask: {ask} | Mid: {mid}")
             except Exception as e:
                 logger.warning(f"Error retrieving tick for {sym}: {e}")
-                ticks[sym] = {
-                    "symbol": sym,
-                    "bid": 0,
-                    "ask": 0,
-                    "mid": 0,
-                    "timestamp": time.time(),
-                    "error": str(e)
-                }
+                # Don't add invalid ticks to the result
         
         return ticks

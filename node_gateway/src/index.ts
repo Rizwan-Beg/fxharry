@@ -39,14 +39,67 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 const clientManager = new ClientManager(wss);
 setClientManager(clientManager);
 
-wss.on('connection', (ws: WebSocket) => {
+// Track Python backend connection separately
+let pythonConnection: WebSocket | null = null;
+
+// Handle WebSocket connections (both Python backend and React frontend)
+wss.on('connection', (ws: WebSocket, req) => {
+  // Detect if this is Python backend (sends tick messages) or React frontend
+  let isPythonBackend = false;
+  
+  // Send welcome message
   ws.send(JSON.stringify({ type: 'welcome', ts: Date.now() }));
+  
+  // Add to client manager initially (for frontend connections)
+  // We'll remove it if it turns out to be Python backend
+  clientManager.addClient(ws);
+  
+  // Handle incoming messages
   ws.on('message', (msg: Buffer) => {
     try {
       const data = JSON.parse(msg.toString());
-      broadcastMarketData(data);
-    } catch {}
+      
+      // If message has type 'tick', it's from Python backend
+      if (data.type === 'tick' || data.type === 'market_data') {
+        if (!isPythonBackend) {
+          // First tick message from this connection - mark as Python backend
+          isPythonBackend = true;
+          // Remove from client manager (Python doesn't need to receive broadcasts)
+          clientManager.removeClient(ws);
+          
+          // Close old Python connection if exists
+          if (pythonConnection && pythonConnection !== ws) {
+            try {
+              pythonConnection.close();
+            } catch {}
+          }
+          pythonConnection = ws;
+          console.log('✅ Connected to Python IBKR Stream');
+        }
+        console.log(`📊 Received market data from Python: ${data.symbol || 'unknown'}`);
+        broadcastMarketData(data);
+      }
+      // Frontend messages don't need special handling - they're already in client manager
+    } catch (err) {
+      console.error('Error parsing WebSocket message:', err);
+    }
   });
+  
+  ws.on('close', () => {
+    if (isPythonBackend && pythonConnection === ws) {
+      pythonConnection = null;
+      console.log('Python IBKR Stream connection closed');
+    } else {
+      console.log('Frontend WebSocket connection closed');
+    }
+  });
+  
+  ws.on('error', (err) => {
+    console.error('WebSocket error:', err);
+  });
+  
+  // Log connection (we'll know if it's Python after first message)
+  console.log(`✅ WebSocket connected (Total clients: ${clientManager.getClientCount()})`);
 });
 
 // gRPC streaming disabled to avoid conflicts with Python streamer

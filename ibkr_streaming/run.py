@@ -3,6 +3,7 @@
 import asyncio
 import signal
 import sys
+import time
 from datetime import datetime
 import nest_asyncio
 nest_asyncio.apply()
@@ -72,6 +73,7 @@ async def main():
                 # Process each symbol
                 for sym, tick in ticks.items():
                     try:
+                        # Update candles (will skip if price is invalid)
                         candles = candle_engine.update(tick)
                         micro = compute_microstructure(tick)
                         
@@ -81,18 +83,31 @@ async def main():
                         if tick_count % 100 == 0:
                             logger.info(f"Processed {tick_count} ticks | Symbol: {sym} | Bid: {tick['bid']} | Ask: {tick['ask']} | Mid: {tick['mid']}")
                         
-                        await push({
-                            "type": "market_data",
-                            "data": {
-                                "symbol": sym,
+                        # Get latest candle for 1m timeframe (for chart display)
+                        latest_candle = None
+                        if sym in candles and "1m" in candles[sym]:
+                            # Get the most recent candle bucket
+                            candle_buckets = candles[sym]["1m"]
+                            if candle_buckets:
+                                latest_bucket = max(candle_buckets.keys())
+                                latest_candle = candle_buckets[latest_bucket]
+                        
+                        # Normalize message format for frontend
+                        message = {
+                            "type": "tick",
+                            "symbol": sym,
+                            "tick": {
                                 "bid": tick["bid"],
                                 "ask": tick["ask"],
                                 "mid": tick["mid"],
-                                "spread": tick.get("spread", (tick["ask"] - tick["bid"])) ,
-                                "candle": candles[sym],
-                                "micro": micro
-                            }
-                        })
+                                "spread": tick.get("spread", tick["ask"] - tick["bid"]),
+                                "timestamp": tick.get("timestamp", time.time())
+                            },
+                            "candle": latest_candle if latest_candle else {},
+                            "micro": micro
+                        }
+                        
+                        await push(message)
                     except Exception as e:
                         logger.error(f"Error processing tick for {sym}: {e}", exc_info=True)
                 

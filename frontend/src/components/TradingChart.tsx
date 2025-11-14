@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Activity, TrendingUp, TrendingDown } from 'lucide-react';
+import PriceChart from './PriceChart';
 
 interface TradingChartProps {
   symbol: string;
@@ -7,127 +8,63 @@ interface TradingChartProps {
   signals: any[];
 }
 
+// Store candles in memory (in production, use a proper state management solution)
+const candleCache: { [symbol: string]: any[] } = {};
+
 export function TradingChart({ symbol, marketData, signals }: TradingChartProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  
-  // Generate sample price data for demonstration
-  const priceData = useMemo(() => {
-    const basePrice = marketData?.close || 1.0850;
-    const data = [];
+  // Convert market data to candle format for lightweight-charts
+  const candles = useMemo(() => {
+    if (!marketData) return [];
     
-    for (let i = 0; i < 100; i++) {
-      const noise = (Math.random() - 0.5) * 0.002;
-      const trend = Math.sin(i * 0.1) * 0.001;
-      const price = basePrice + trend + noise;
+    const data = marketData;
+    const candle = data.candle || {};
+    
+    // If we have a valid candle with OHLC, add it to the cache
+    if (candle.open && candle.high && candle.low && candle.close && candle.timestamp) {
+      const candleKey = `${symbol}_${candle.timestamp}`;
       
-      data.push({
-        time: Date.now() - (100 - i) * 60000, // 1 minute intervals
-        price: price,
-        volume: Math.random() * 100 + 50
-      });
+      // Initialize cache for symbol if needed
+      if (!candleCache[symbol]) {
+        candleCache[symbol] = [];
+      }
+      
+      // Check if this candle already exists (same timestamp)
+      const existingIndex = candleCache[symbol].findIndex(
+        (c: any) => c.time === candle.timestamp
+      );
+      
+      const chartCandle = {
+        time: candle.timestamp as number,
+        open: candle.open as number,
+        high: candle.high as number,
+        low: candle.low as number,
+        close: candle.close as number,
+      };
+      
+      if (existingIndex >= 0) {
+        // Update existing candle
+        candleCache[symbol][existingIndex] = chartCandle;
+      } else {
+        // Add new candle
+        candleCache[symbol].push(chartCandle);
+        // Keep only last 500 candles to prevent memory issues
+        if (candleCache[symbol].length > 500) {
+          candleCache[symbol] = candleCache[symbol].slice(-500);
+        }
+      }
+      
+      // Sort by time
+      candleCache[symbol].sort((a: any, b: any) => a.time - b.time);
     }
     
-    return data;
+    return candleCache[symbol] || [];
   }, [marketData, symbol]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas size
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    // Clear canvas
-    ctx.fillStyle = '#1f2937';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw grid
-    ctx.strokeStyle = '#374151';
-    ctx.lineWidth = 1;
-    
-    // Vertical grid lines
-    for (let i = 0; i < canvas.width; i += 50) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-    }
-    
-    // Horizontal grid lines
-    for (let i = 0; i < canvas.height; i += 30) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
-
-    // Draw price line
-    if (priceData.length > 1) {
-      const minPrice = Math.min(...priceData.map(d => d.price));
-      const maxPrice = Math.max(...priceData.map(d => d.price));
-      const priceRange = maxPrice - minPrice || 0.001;
-      
-      ctx.strokeStyle = '#3b82f6';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      
-      priceData.forEach((point, index) => {
-        const x = (index / (priceData.length - 1)) * canvas.width;
-        const y = canvas.height - ((point.price - minPrice) / priceRange) * canvas.height;
-        
-        if (index === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      });
-      
-      ctx.stroke();
-
-      // Draw AI signals
-      signals?.forEach((signal) => {
-        const signalIndex = Math.floor(Math.random() * priceData.length);
-        const x = (signalIndex / (priceData.length - 1)) * canvas.width;
-        const y = canvas.height - ((priceData[signalIndex].price - minPrice) / priceRange) * canvas.height;
-        
-        ctx.fillStyle = signal.signal === 'BUY' ? '#10b981' : '#ef4444';
-        ctx.beginPath();
-        ctx.arc(x, y, 6, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // Signal label
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '12px Inter';
-        ctx.textAlign = 'center';
-        ctx.fillText(
-          signal.signal, 
-          x, 
-          y - 15
-        );
-      });
-    }
-
-    // Draw current price info
-    if (marketData) {
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 16px Inter';
-      ctx.textAlign = 'left';
-      ctx.fillText(`${symbol}: ${marketData.close?.toFixed(5)}`, 10, 25);
-      
-      const change = marketData.change || 0;
-      ctx.fillStyle = change >= 0 ? '#10b981' : '#ef4444';
-      ctx.fillText(
-        `${change >= 0 ? '+' : ''}${change.toFixed(5)} (${((change / marketData.close) * 100).toFixed(2)}%)`,
-        10,
-        50
-      );
-    }
-
-  }, [priceData, signals, marketData, symbol]);
+  // Get current price for display
+  const currentPrice = marketData?.mid || marketData?.close || marketData?.bid || 0;
+  const bid = marketData?.bid || 0;
+  const ask = marketData?.ask || 0;
+  const spread = marketData?.spread || (ask > 0 && bid > 0 ? ask - bid : 0);
 
   return (
     <div className="relative">
@@ -142,26 +79,33 @@ export function TradingChart({ symbol, marketData, signals }: TradingChartProps)
             <>
               <div className="flex items-center space-x-1">
                 <span className="text-gray-400">Bid:</span>
-                <span className="text-white">{marketData.bid?.toFixed(5)}</span>
+                <span className="text-white">{bid.toFixed(5)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <span className="text-gray-400">Ask:</span>
-                <span className="text-white">{marketData.ask?.toFixed(5)}</span>
+                <span className="text-white">{ask.toFixed(5)}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <span className="text-gray-400">Mid:</span>
+                <span className="text-white">{currentPrice.toFixed(5)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <span className="text-gray-400">Spread:</span>
-                <span className="text-white">{marketData.spread?.toFixed(1)} pips</span>
+                <span className="text-white">{spread.toFixed(5)}</span>
               </div>
             </>
           )}
         </div>
       </div>
       
-      <canvas
-        ref={canvasRef}
-        className="w-full h-96 rounded-lg border border-gray-700"
-        style={{ imageRendering: 'pixelated' }}
-      />
+      {/* Real-time candlestick chart */}
+      {candles.length > 0 ? (
+        <PriceChart candles={candles} height={400} />
+      ) : (
+        <div className="w-full h-96 rounded-lg border border-gray-700 bg-gray-800 flex items-center justify-center">
+          <div className="text-gray-400">Waiting for market data...</div>
+        </div>
+      )}
       
       {/* Chart Controls */}
       <div className="flex justify-between items-center mt-4">
@@ -181,14 +125,18 @@ export function TradingChart({ symbol, marketData, signals }: TradingChartProps)
             <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
             <span>Price</span>
           </div>
-          <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span>Buy Signals</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <span>Sell Signals</span>
-          </div>
+          {signals && signals.length > 0 && (
+            <>
+              <div className="flex items-center space-x-1">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>Buy Signals</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <span>Sell Signals</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

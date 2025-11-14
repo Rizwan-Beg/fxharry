@@ -11,7 +11,8 @@ export class ClientManager {
 
   constructor(wss: WebSocketServer) {
     this.wss = wss;
-    this.setupEventHandlers();
+    // Don't auto-setup handlers - let the caller handle connection events
+    // this.setupEventHandlers();
   }
 
   private setupEventHandlers(): void {

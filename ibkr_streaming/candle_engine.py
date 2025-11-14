@@ -21,8 +21,15 @@ class CandleEngine:
 
     def update(self, tick):
         """Update candle data for all timeframes"""
+        import math
         symbol = tick['symbol']
         price = tick['mid']
+        
+        # Validate price is not NaN or invalid
+        if price is None or (isinstance(price, float) and math.isnan(price)) or price <= 0:
+            logger.warning(f"Invalid price for {symbol}: {price}, skipping candle update")
+            return self.candles
+        
         now = int(time.time())
 
         new_candles = []
@@ -44,6 +51,17 @@ class CandleEngine:
             else:
                 # Update existing candle
                 c = self.candles[symbol][tf][bucket]
+                
+                # Initialize with current price if candle has NaN values
+                if math.isnan(c.get("open", float('nan'))):
+                    c["open"] = price
+                if math.isnan(c.get("high", float('nan'))):
+                    c["high"] = price
+                if math.isnan(c.get("low", float('nan'))):
+                    c["low"] = price
+                if math.isnan(c.get("close", float('nan'))):
+                    c["close"] = price
+                
                 old_high = c["high"]
                 old_low = c["low"]
                 c["high"] = max(c["high"], price)
