@@ -3,13 +3,13 @@
  * Express server with WebSocket support, gRPC client, and REST API routes
  */
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { WebSocketServer } from 'ws';
-import { createAIClient } from './grpc_clients/ai_client';
-import apiRoutes from './api/routes';
-import { errorMiddleware } from './api/middlewares';
-import { ClientManager } from './websockets/client.manager';
+import { WebSocketServer, WebSocket } from 'ws';
+import apiRoutes from './api/routes/index.js';
+import { errorMiddleware } from './api/middlewares/index.js';
+import { ClientManager } from './websockets/client.manager.js';
+import { broadcastMarketData, setClientManager } from './websockets/market.stream.js';
 
 const app = express();
 app.use(cors());
@@ -20,7 +20,7 @@ const grpcHost = process.env.GRPC_HOST || 'localhost';
 const grpcPort = process.env.GRPC_PORT ? Number(process.env.GRPC_PORT) : 50051;
 
 // Health route
-app.get('/api/health', (_req, res) => {
+app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', grpc: `${grpcHost}:${grpcPort}`, timestamp: new Date().toISOString() });
 });
 
@@ -32,33 +32,24 @@ app.use(errorMiddleware);
 
 const server = app.listen(port, () => {
   console.log(`Node Gateway listening on http://0.0.0.0:${port}`);
-  console.log(`gRPC connection: ${grpcHost}:${grpcPort}`);
 });
 
 // WebSocket server for real-time updates
 const wss = new WebSocketServer({ server, path: '/ws' });
 const clientManager = new ClientManager(wss);
+setClientManager(clientManager);
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws: WebSocket) => {
   ws.send(JSON.stringify({ type: 'welcome', ts: Date.now() }));
+  ws.on('message', (msg: Buffer) => {
+    try {
+      const data = JSON.parse(msg.toString());
+      broadcastMarketData(data);
+    } catch {}
+  });
 });
 
-// Connect to Python gRPC and stream market data to clients
-const client = createAIClient(`${grpcHost}:${grpcPort}`);
-
-function broadcast(obj: any) {
-  const msg = JSON.stringify(obj);
-  clientManager.broadcast(msg);
-}
-
-// Start streaming for default symbols
-const stream = client.StreamMarketData({ symbols: ['EURUSD', 'GBPUSD', 'XAUUSD'] });
-stream.on('data', (update: any) => {
-  broadcast({ type: 'market_data', data: update });
-});
-stream.on('error', (err: any) => {
-  console.error('gRPC stream error:', err);
-});
+// gRPC streaming disabled to avoid conflicts with Python streamer
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

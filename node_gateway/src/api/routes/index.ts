@@ -4,9 +4,9 @@
  */
 
 import { Router } from 'express';
-import marketRoutes from './market.routes';
-import tradesRoutes from './trades.routes';
-import accountRoutes from './account.routes';
+import marketRoutes from './market.routes.js';
+import tradesRoutes from './trades.routes.js';
+import accountRoutes from './account.routes.js';
 
 const router = Router();
 

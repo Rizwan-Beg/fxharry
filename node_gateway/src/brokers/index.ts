@@ -3,11 +3,11 @@
  * Central export for all broker implementations
  */
 
-export { BaseBroker } from './baseBroker';
-export { OANDAService } from './oanda.service';
-export { IBKRService } from './ibkr.service';
-export { MT5Service } from './mt5.service';
-export { BinanceService } from './binance.service';
+import type { BaseBroker } from './baseBroker';
+import { OANDAService } from './oanda.service';
+import { IBKRService } from './ibkr.service';
+import { MT5Service } from './mt5.service';
+import { BinanceService } from './binance.service';
 
 export type BrokerType = 'oanda' | 'ibkr' | 'mt5' | 'binance';
 
@@ -25,3 +25,9 @@ export function createBroker(type: BrokerType, config: any): BaseBroker {
       throw new Error(`Unknown broker type: ${type}`);
   }
 }
+
+export { BaseBroker } from './baseBroker';
+export { OANDAService } from './oanda.service';
+export { IBKRService } from './ibkr.service';
+export { MT5Service } from './mt5.service';
+export { BinanceService } from './binance.service';

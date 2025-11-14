@@ -5,6 +5,7 @@ import { PositionsPanel } from './PositionsPanel';
 import { MarketOverview } from './MarketOverview';
 import { QuickTradePanel } from './QuickTradePanel';
 import { RiskIndicator } from './RiskIndicator';
+import PriceChart from "./PriceChart";
 import { TrendingUp, TrendingDown, DollarSign, AlertTriangle } from 'lucide-react';
 
 interface TradingDashboardProps {
