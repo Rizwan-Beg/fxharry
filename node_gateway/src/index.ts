@@ -62,8 +62,8 @@ wss.on('connection', (ws: WebSocket, req) => {
     // Connection might be closed already
   }
   
-  // Don't add to client manager yet - wait to see if it's Python or frontend
-  // We'll add frontend connections after first non-tick message
+  // Tentatively add to client manager so broadcasts reach frontend immediately
+  clientManager.addClient(ws);
   
   // Handle incoming messages
   ws.on('message', (msg: Buffer) => {
@@ -76,6 +76,8 @@ wss.on('connection', (ws: WebSocket, req) => {
         if (!isPythonBackend) {
           // First tick message from this connection - mark as Python backend
           isPythonBackend = true;
+          // Remove from client manager; this is a backend stream
+          clientManager.removeClient(ws);
           
           // Close old Python connection if exists and is different
           if (pythonConnection && pythonConnection !== ws && pythonConnection.readyState === WebSocket.OPEN) {
@@ -97,7 +99,6 @@ wss.on('connection', (ws: WebSocket, req) => {
       } else {
         // Frontend message - add to client manager if not already added
         if (!isPythonBackend && !loggedConnection) {
-          clientManager.addClient(ws);
           console.log(`✅ Frontend WebSocket connected (Total clients: ${clientManager.getClientCount()})`);
           loggedConnection = true;
         }
