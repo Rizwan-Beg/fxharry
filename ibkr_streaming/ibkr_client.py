@@ -21,6 +21,11 @@ def connect_ibkr():
             logger.info("✅ Successfully connected to IBKR")
             logger.info(f"Connection Status: {ib.isConnected()}")
             logger.info(f"Client ID: {IBKR_CLIENT_ID}")
+            try:
+                ib.reqMarketDataType(1)
+                logger.info("Market data type set to REALTIME (1)")
+            except Exception:
+                logger.warning("Unable to set market data type; continuing with default")
         except Exception as e:
             logger.error(f"❌ Failed to connect to IBKR: {e}", exc_info=True)
             raise

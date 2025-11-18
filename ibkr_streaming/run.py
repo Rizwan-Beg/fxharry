@@ -55,6 +55,10 @@ async def main():
         
         logger.info("=" * 80)
         logger.info("Streaming service started successfully. Beginning data collection...")
+        await push({
+            "type": "connection_status",
+            "data": {"ibkr_connected": True}
+        })
         logger.info(f"Subscribed symbols: {list(tick_stream.subscribed.keys())}")
         logger.info(f"Tick collection interval: 0.4 seconds (~2.5 ticks/second)")
         logger.info("=" * 80)
@@ -114,6 +118,10 @@ async def main():
                 # Log iteration summary every 50 iterations
                 if iteration % 50 == 0:
                     logger.info(f"Iteration #{iteration} | Total ticks processed: {tick_count} | Active symbols: {len(ticks)}")
+                    await push({
+                        "type": "connection_status",
+                        "data": {"ibkr_connected": True}
+                    })
                 
                 await asyncio.sleep(0.4)   # ~2.5 ticks/second
                 

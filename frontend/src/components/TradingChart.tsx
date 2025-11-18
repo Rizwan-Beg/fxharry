@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Activity, TrendingUp, TrendingDown } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import PriceChart from './PriceChart';
 
 interface TradingChartProps {
@@ -12,49 +12,90 @@ interface TradingChartProps {
 const candleCache: { [symbol: string]: any[] } = {};
 
 export function TradingChart({ symbol, marketData, signals }: TradingChartProps) {
+  // Debug: Log when marketData changes (reduced frequency)
+  React.useEffect(() => {
+    if (marketData) {
+      const hasCandle = !!marketData.candle;
+      const candleValid = hasCandle && 
+        typeof marketData.candle.open === 'number' && 
+        typeof marketData.candle.timestamp === 'number';
+      
+      // Only log every 10th update to reduce console spam
+      const shouldLog = Math.random() < 0.1; // 10% chance
+      if (shouldLog) {
+        console.log(`[TradingChart] ${symbol} marketData:`, {
+          hasCandle,
+          candleValid,
+          bid: marketData.bid,
+          ask: marketData.ask,
+          mid: marketData.mid,
+          candlesCount: candleCache[symbol]?.length || 0,
+          hasCandleData: !!marketData.candle?.timestamp
+        });
+      }
+    } else {
+      console.log(`[TradingChart] ${symbol} - No marketData`);
+    }
+  }, [marketData, symbol]);
+
   // Convert market data to candle format for lightweight-charts
   const candles = useMemo(() => {
-    if (!marketData) return [];
+    if (!marketData) {
+      console.log(`[TradingChart] No marketData for ${symbol}`);
+      return [];
+    }
     
     const data = marketData;
-    const candle = data.candle || {};
+    const candle = (data.candle && typeof data.candle.timestamp === 'number' && typeof data.candle.open === 'number')
+      ? data.candle
+      : {
+          open: Number(data.open ?? data.mid ?? data.bid) || 0,
+          high: Number(data.high ?? data.mid ?? data.ask) || 0,
+          low: Number(data.low ?? data.mid ?? data.bid) || 0,
+          close: Number(data.close ?? data.mid ?? data.ask) || 0,
+          timestamp: typeof data.timestamp === 'number' ? Math.floor(data.timestamp) : Math.floor(Date.now() / 1000),
+        };
     
-    // If we have a valid candle with OHLC, add it to the cache
-    if (candle.open && candle.high && candle.low && candle.close && candle.timestamp) {
-      const candleKey = `${symbol}_${candle.timestamp}`;
-      
-      // Initialize cache for symbol if needed
+    if (candle && typeof candle.open === 'number' && typeof candle.high === 'number' && 
+        typeof candle.low === 'number' && typeof candle.close === 'number' && 
+        candle.timestamp && typeof candle.timestamp === 'number') {
       if (!candleCache[symbol]) {
         candleCache[symbol] = [];
       }
       
-      // Check if this candle already exists (same timestamp)
+      const timestamp = Math.floor((candle.timestamp as number) / 60) * 60;
+      
       const existingIndex = candleCache[symbol].findIndex(
-        (c: any) => c.time === candle.timestamp
+        (c: any) => c.time === timestamp
       );
       
       const chartCandle = {
-        time: candle.timestamp as number,
-        open: candle.open as number,
-        high: candle.high as number,
-        low: candle.low as number,
-        close: candle.close as number,
+        time: timestamp as number,
+        open: Number(candle.open) || 0,
+        high: Number(candle.high) || 0,
+        low: Number(candle.low) || 0,
+        close: Number(candle.close) || 0,
       };
       
-      if (existingIndex >= 0) {
-        // Update existing candle
-        candleCache[symbol][existingIndex] = chartCandle;
-      } else {
-        // Add new candle
-        candleCache[symbol].push(chartCandle);
-        // Keep only last 500 candles to prevent memory issues
-        if (candleCache[symbol].length > 500) {
-          candleCache[symbol] = candleCache[symbol].slice(-500);
+      if (chartCandle.open > 0 && chartCandle.high > 0 && chartCandle.low > 0 && chartCandle.close > 0) {
+        if (existingIndex >= 0) {
+          const prev = candleCache[symbol][existingIndex];
+          candleCache[symbol][existingIndex] = {
+            time: prev.time,
+            open: prev.open || chartCandle.open,
+            high: Math.max(prev.high, chartCandle.high),
+            low: Math.min(prev.low, chartCandle.low),
+            close: chartCandle.close,
+          };
+        } else {
+          candleCache[symbol].push(chartCandle);
+          if (candleCache[symbol].length > 500) {
+            candleCache[symbol] = candleCache[symbol].slice(-500);
+          }
         }
+        
+        candleCache[symbol].sort((a: any, b: any) => a.time - b.time);
       }
-      
-      // Sort by time
-      candleCache[symbol].sort((a: any, b: any) => a.time - b.time);
     }
     
     return candleCache[symbol] || [];
@@ -99,8 +140,19 @@ export function TradingChart({ symbol, marketData, signals }: TradingChartProps)
       </div>
       
       {/* Real-time candlestick chart */}
-      {candles.length > 0 ? (
+      {candles && candles.length > 0 ? (
         <PriceChart candles={candles} height={400} />
+      ) : marketData && (marketData.bid > 0 || marketData.ask > 0) ? (
+        // Show placeholder with price info while waiting for candles
+        <div className="w-full h-96 rounded-lg border border-gray-700 bg-gray-800 flex flex-col items-center justify-center">
+          <div className="text-gray-400 mb-4">Waiting for candle data...</div>
+          <div className="text-sm text-gray-500">
+            Current Price: {marketData.mid?.toFixed(5) || marketData.bid?.toFixed(5) || 'N/A'}
+          </div>
+          <div className="text-xs text-gray-600 mt-2">
+            Candles will appear after 1-2 minutes of data collection
+          </div>
+        </div>
       ) : (
         <div className="w-full h-96 rounded-lg border border-gray-700 bg-gray-800 flex items-center justify-center">
           <div className="text-gray-400">Waiting for market data...</div>

@@ -22,16 +22,12 @@ export class ClientManager {
   }
 
   addClient(ws: WebSocket): void {
-    this.clients.add(ws);
-    
-    ws.on('close', () => {
-      this.removeClient(ws);
-    });
-
-    ws.on('error', (error) => {
-      console.error('WebSocket error:', error);
-      this.removeClient(ws);
-    });
+    // Only add if not already in set
+    if (!this.clients.has(ws)) {
+      this.clients.add(ws);
+    }
+    // Note: close/error handlers are managed by the caller (index.ts)
+    // to avoid duplicate handlers
   }
 
   removeClient(ws: WebSocket): void {

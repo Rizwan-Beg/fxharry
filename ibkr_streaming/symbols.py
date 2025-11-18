@@ -19,7 +19,7 @@ _xauusd.exchange = "IDEALPRO"
 SYMBOLS = {
     "EURUSD": Forex("EURUSD"),
     "GBPUSD": Forex("GBPUSD"),
-    "XAUUSD": _xauusd,
+    # "XAUUSD": _xauusd,  # Commented out - will fix later
     "USDJPY": Forex("USDJPY"),
     "USDCAD": Forex("USDCAD")
 }

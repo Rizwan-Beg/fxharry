@@ -6,7 +6,7 @@ interface MarketOverviewProps {
 }
 
 export function MarketOverview({ marketData = {} }: MarketOverviewProps) {
-  const symbols = ['EURUSD', 'GBPUSD', 'XAUUSD', 'USDJPY', 'USDCAD'];
+  const symbols = ['EURUSD', 'GBPUSD', 'USDJPY', 'USDCAD']; // XAUUSD commented out - will fix later
   
   const getChangeColor = (change: number) => {
     return change >= 0 ? 'text-green-400' : 'text-red-400';

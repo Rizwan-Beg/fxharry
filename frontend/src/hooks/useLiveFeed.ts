@@ -29,6 +29,7 @@ export function useLiveFeed() {
     };
 
     on('market_data', (data: any) => {
+      console.log('[useLiveFeed] Received market_data:', data);
       setMarketData((prev: any) => ({ ...prev, [data.symbol]: data }));
       setConnectionStatus((prev) => ({ ...prev, market_data: true, ibkr: true }));
     });

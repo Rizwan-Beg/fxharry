@@ -31,13 +31,19 @@ app.use('/api', apiRoutes);
 app.use(errorMiddleware);
 
 const server = app.listen(port, () => {
-  console.log(`Node Gateway listening on http://0.0.0.0:${port}`);
+  console.log(`✅ Node Gateway listening on http://0.0.0.0:${port}`);
+  console.log(`✅ WebSocket server ready at ws://localhost:${port}/ws`);
 });
 
 // WebSocket server for real-time updates
 const wss = new WebSocketServer({ server, path: '/ws' });
 const clientManager = new ClientManager(wss);
 setClientManager(clientManager);
+
+// Log when WebSocket server is ready
+wss.on('listening', () => {
+  console.log(`✅ WebSocket server listening on ws://localhost:${port}/ws`);
+});
 
 // Track Python backend connection separately
 let pythonConnection: WebSocket | null = null;
@@ -46,40 +52,56 @@ let pythonConnection: WebSocket | null = null;
 wss.on('connection', (ws: WebSocket, req) => {
   // Detect if this is Python backend (sends tick messages) or React frontend
   let isPythonBackend = false;
+  let messageCount = 0;
+  let loggedConnection = false; // Track if we've logged this connection
   
   // Send welcome message
-  ws.send(JSON.stringify({ type: 'welcome', ts: Date.now() }));
+  try {
+    ws.send(JSON.stringify({ type: 'welcome', ts: Date.now() }));
+  } catch (err) {
+    // Connection might be closed already
+  }
   
-  // Add to client manager initially (for frontend connections)
-  // We'll remove it if it turns out to be Python backend
-  clientManager.addClient(ws);
+  // Don't add to client manager yet - wait to see if it's Python or frontend
+  // We'll add frontend connections after first non-tick message
   
   // Handle incoming messages
   ws.on('message', (msg: Buffer) => {
     try {
       const data = JSON.parse(msg.toString());
+      messageCount++;
       
       // If message has type 'tick', it's from Python backend
       if (data.type === 'tick' || data.type === 'market_data') {
         if (!isPythonBackend) {
           // First tick message from this connection - mark as Python backend
           isPythonBackend = true;
-          // Remove from client manager (Python doesn't need to receive broadcasts)
-          clientManager.removeClient(ws);
           
-          // Close old Python connection if exists
-          if (pythonConnection && pythonConnection !== ws) {
+          // Close old Python connection if exists and is different
+          if (pythonConnection && pythonConnection !== ws && pythonConnection.readyState === WebSocket.OPEN) {
             try {
               pythonConnection.close();
             } catch {}
           }
           pythonConnection = ws;
-          console.log('✅ Connected to Python IBKR Stream');
+          if (!loggedConnection) {
+            console.log('✅ Connected to Python IBKR Stream');
+            loggedConnection = true;
+          }
         }
-        console.log(`📊 Received market data from Python: ${data.symbol || 'unknown'}`);
+        // Only log every 50th message to reduce spam
+        if (messageCount % 50 === 0) {
+          console.log(`📊 Received market data from Python: ${data.symbol || 'unknown'} (${messageCount} messages)`);
+        }
         broadcastMarketData(data);
+      } else {
+        // Frontend message - add to client manager if not already added
+        if (!isPythonBackend && !loggedConnection) {
+          clientManager.addClient(ws);
+          console.log(`✅ Frontend WebSocket connected (Total clients: ${clientManager.getClientCount()})`);
+          loggedConnection = true;
+        }
       }
-      // Frontend messages don't need special handling - they're already in client manager
     } catch (err) {
       console.error('Error parsing WebSocket message:', err);
     }
@@ -90,16 +112,18 @@ wss.on('connection', (ws: WebSocket, req) => {
       pythonConnection = null;
       console.log('Python IBKR Stream connection closed');
     } else {
-      console.log('Frontend WebSocket connection closed');
+      // Remove from client manager if it was a frontend connection
+      clientManager.removeClient(ws);
     }
   });
   
   ws.on('error', (err) => {
     console.error('WebSocket error:', err);
+    // Remove from client manager on error
+    if (!isPythonBackend) {
+      clientManager.removeClient(ws);
+    }
   });
-  
-  // Log connection (we'll know if it's Python after first message)
-  console.log(`✅ WebSocket connected (Total clients: ${clientManager.getClientCount()})`);
 });
 
 // gRPC streaming disabled to avoid conflicts with Python streamer

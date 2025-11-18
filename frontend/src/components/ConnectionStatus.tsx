@@ -10,7 +10,7 @@ interface ConnectionStatusProps {
 }
 
 export function ConnectionStatus({ status }: ConnectionStatusProps) {
-  const allConnected = status?.ibkr && status?.websocket && status?.market_data;
+  const allConnected = (status?.ibkr && status?.websocket) || status?.market_data;
 
   return (
     <div className="flex items-center space-x-2">

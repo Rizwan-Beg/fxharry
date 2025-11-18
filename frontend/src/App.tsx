@@ -75,7 +75,7 @@ function App() {
 
         {/* NEW — Symbol Switch Buttons */}
         <div className="flex space-x-3 mt-4">
-          {['EURUSD', 'GBPUSD', 'XAUUSD', 'USDJPY', 'USDCAD'].map((symbol) => (
+          {['EURUSD', 'GBPUSD', 'USDJPY', 'USDCAD'].map((symbol) => (
             <button
               key={symbol}
               onClick={() => setSelectedSymbol(symbol)}
@@ -123,7 +123,7 @@ function App() {
             signals={signals}
             positions={positions}
             riskAssessment={riskAssessment}
-            selectedSymbol={selectedSymbol}   // <-- NEW prop
+            selectedSymbol={selectedSymbol}
           />
         )}
 

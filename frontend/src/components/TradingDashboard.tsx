@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TradingChart } from './TradingChart';
 import { SignalsPanel } from './SignalsPanel';
 import { PositionsPanel } from './PositionsPanel';
@@ -13,12 +13,20 @@ interface TradingDashboardProps {
   signals: any[];
   positions: any[];
   riskAssessment: any;
+  selectedSymbol?: string;  // Optional prop from App
 }
 
-export function TradingDashboard({ marketData, signals, positions, riskAssessment }: TradingDashboardProps) {
-  const [selectedSymbol, setSelectedSymbol] = useState('EURUSD');
+export function TradingDashboard({ marketData, signals, positions, riskAssessment, selectedSymbol: propSelectedSymbol }: TradingDashboardProps) {
+  const [selectedSymbol, setSelectedSymbol] = useState(propSelectedSymbol || 'EURUSD');
   
-  const symbols = ['EURUSD', 'GBPUSD', 'XAUUSD', 'USDJPY', 'USDCAD'];
+  // Update local state if prop changes
+  useEffect(() => {
+    if (propSelectedSymbol) {
+      setSelectedSymbol(propSelectedSymbol);
+    }
+  }, [propSelectedSymbol]);
+  
+  const symbols = ['EURUSD', 'GBPUSD', 'USDJPY', 'USDCAD']; // XAUUSD commented out - will fix later
 
   return (
     <div className="space-y-6">
