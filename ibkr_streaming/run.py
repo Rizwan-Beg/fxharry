@@ -87,27 +87,33 @@ async def main():
                         if tick_count % 100 == 0:
                             logger.info(f"Processed {tick_count} ticks | Symbol: {sym} | Bid: {tick['bid']} | Ask: {tick['ask']} | Mid: {tick['mid']}")
                         
-                        # Get latest candle for 1m timeframe (for chart display)
-                        latest_candle = None
-                        if sym in candles and "1m" in candles[sym]:
-                            # Get the most recent candle bucket
-                            candle_buckets = candles[sym]["1m"]
-                            if candle_buckets:
-                                latest_bucket = max(candle_buckets.keys())
-                                latest_candle = candle_buckets[latest_bucket]
+                        # Get latest candles for all timeframes
+                        all_candles = {}
+                        if sym in candles:
+                            for tf in ["1m", "5m", "15m", "1h", "4h"]:
+                                if tf in candles[sym]:
+                                    candle_buckets = candles[sym][tf]
+                                    if candle_buckets:
+                                        latest_bucket = max(candle_buckets.keys())
+                                        all_candles[tf] = candle_buckets[latest_bucket]
+                        
+                        # Get 1m candle for primary display
+                        latest_candle = all_candles.get("1m", {})
                         
                         # Normalize message format for frontend
+                        # Include type field for Node Gateway routing
                         message = {
                             "type": "tick",
                             "symbol": sym,
                             "tick": {
-                                "bid": tick["bid"],
-                                "ask": tick["ask"],
-                                "mid": tick["mid"],
-                                "spread": tick.get("spread", tick["ask"] - tick["bid"]),
-                                "timestamp": tick.get("timestamp", time.time())
+                                "bid": float(tick["bid"]),
+                                "ask": float(tick["ask"]),
+                                "mid": float(tick["mid"]),
+                                "spread": float(tick.get("spread", tick["ask"] - tick["bid"])),
+                                "timestamp": float(tick.get("timestamp", time.time()))
                             },
-                            "candle": latest_candle if latest_candle else {},
+                            "candle": latest_candle,
+                            "candles": all_candles,  # All timeframes
                             "micro": micro
                         }
                         

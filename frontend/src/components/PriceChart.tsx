@@ -1,6 +1,11 @@
 import { useEffect, useRef } from "react";
 import { createChart, IChartApi, ISeriesApi, Time, CandlestickData } from "lightweight-charts";
 
+// Local narrow type for charts that support adding a candlestick series
+type ChartWithSeries = IChartApi & {
+  addCandlestickSeries: (opts: Record<string, unknown>) => ISeriesApi<"Candlestick">;
+};
+
 interface Props {
   candles: CandlestickData<Time>[];
   height?: number;
@@ -20,22 +25,39 @@ export default function PriceChart({ candles, height = 320 }: Props) {
       if (chartRef.current || !containerRef.current) return;
       const w = containerRef.current.clientWidth;
       if (w <= 0 || height <= 0) return;
-      chartRef.current = createChart(containerRef.current, {
-        width: w,
-        height,
-        layout: { background: { color: "#08121a" }, textColor: "#dbeafe" },
-        grid: { vertLines: { color: "rgba(255,255,255,0.03)" }, horzLines: { color: "rgba(255,255,255,0.03)" } },
-        crosshair: { mode: 1 },
-        timeScale: { timeVisible: true, secondsVisible: false },
-      });
-      seriesRef.current = chartRef.current.addCandlestickSeries({
-        upColor: "#10b981",
-        downColor: "#ef4444",
-        borderUpColor: "#10b981",
-        borderDownColor: "#ef4444",
-        wickUpColor: "#10b981",
-        wickDownColor: "#ef4444",
-      });
+      try {
+        const chart = createChart(containerRef.current, {
+          width: w,
+          height,
+          layout: { background: { color: "#08121a" }, textColor: "#dbeafe" },
+          grid: { vertLines: { color: "rgba(255,255,255,0.03)" }, horzLines: { color: "rgba(255,255,255,0.03)" } },
+          crosshair: { mode: 1 },
+          timeScale: { timeVisible: true, secondsVisible: false },
+        });
+
+        const chartWithSeries = chart as unknown as ChartWithSeries;
+        // Defensive: ensure chart exposes addCandlestickSeries before using it
+        if (typeof chartWithSeries.addCandlestickSeries !== 'function') {
+          console.error('[PriceChart] createChart returned unexpected object (no addCandlestickSeries). Skipping chart creation.');
+          chartRef.current = null;
+          seriesRef.current = null;
+          return;
+        }
+
+        chartRef.current = chart;
+        seriesRef.current = chartWithSeries.addCandlestickSeries({
+          upColor: "#10b981",
+          downColor: "#ef4444",
+          borderUpColor: "#10b981",
+          borderDownColor: "#ef4444",
+          wickUpColor: "#10b981",
+          wickDownColor: "#ef4444",
+        });
+      } catch (err) {
+        console.error('[PriceChart] Error creating chart:', err);
+        chartRef.current = null;
+        seriesRef.current = null;
+      }
     };
 
     tryInit();
@@ -55,7 +77,9 @@ export default function PriceChart({ candles, height = 320 }: Props) {
       if (chartRef.current) {
         try {
           chartRef.current.remove();
-        } catch {}
+        } catch (e) {
+          void e;
+        }
       }
       chartRef.current = null;
       seriesRef.current = null;
@@ -81,5 +105,7 @@ export default function PriceChart({ candles, height = 320 }: Props) {
     lastCandleCountRef.current = candles.length;
   }, [candles]);
 
-  return <div ref={containerRef} style={{ width: "100%", height }} />;
+  const containerStyle: React.CSSProperties = { width: "100%", height };
+  // eslint-disable-next-line react/style-prop-object
+  return <div ref={containerRef} style={containerStyle} />;
 }

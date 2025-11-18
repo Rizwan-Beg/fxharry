@@ -17,6 +17,10 @@ export function broadcastMarketData(raw: any) {
     console.warn('No clients connected - data not broadcast');
     return;
   }
+  try {
+    const keys = normalized && normalized.data ? Object.keys(normalized.data) : [];
+    console.log(`[market.stream] Broadcasting market_data for: ${keys.join(',')}`);
+  } catch (e) {}
   manager.broadcast(JSON.stringify(normalized));
   try {
     manager.broadcast(JSON.stringify({ type: 'connection_status', data: { ibkr_connected: true } }));
@@ -24,12 +28,36 @@ export function broadcastMarketData(raw: any) {
 }
 
 function normalize(raw: any) {
-  // Handle Python tick format: { type: "tick", symbol, tick: {bid, ask, mid}, candle, micro }
+  // Handle Python tick format: { type: "tick", symbol, tick: {bid, ask, mid}, candle, candles, micro }
   if (raw && raw.type === 'tick' && raw.symbol) {
     const symbol = raw.symbol;
     const tick = raw.tick || {};
     const micro = raw.micro || {};
-    const candle = extractLatestCandle(raw.candle || {});
+    
+    // Extract latest candle from various possible formats
+    let candle: any = null;
+    // Try selecting from raw.candles or raw.candle
+    if (raw.candles && raw.candles['1m']) {
+      candle = raw.candles['1m'];
+    } else if (raw.candle && typeof raw.candle.open === 'number') {
+      candle = raw.candle;
+    } else if (raw.candles) {
+      // Fallback to any timeframe
+      const tfs = Object.keys(raw.candles || {});
+      if (tfs.length > 0) {
+        const tf = tfs[0];
+        // If buckets keyed by timestamp
+        const buckets = raw.candles[tf];
+        if (buckets && typeof buckets === 'object') {
+          const keys = Object.keys(buckets).map((k) => Number(k)).filter((n) => !Number.isNaN(n));
+          if (keys.length > 0) {
+            const latest = String(Math.max(...keys));
+            candle = buckets[latest] || buckets[Object.keys(buckets)[0]];
+          }
+        }
+      }
+    }
+    
     const bid = typeof tick.bid === 'number' && !isNaN(tick.bid) ? tick.bid : 0;
     const ask = typeof tick.ask === 'number' && !isNaN(tick.ask) ? tick.ask : 0;
     const mid = typeof tick.mid === 'number' && !isNaN(tick.mid) 
@@ -43,22 +71,38 @@ function normalize(raw: any) {
     const high = candle?.high || mid;
     const low = candle?.low || mid;
     const close = candle?.close || mid;
-    
+    const candleTimestamp = candle?.timestamp || Math.floor(Date.now() / 1000);
+
+    // Include all candles for multi-timeframe support
+    const allCandles = raw.candles || {};
+    if (candle && !allCandles['1m']) {
+      allCandles['1m'] = candle;
+    }
+
     return {
       type: 'market_data',
       data: {
-        symbol,
-        bid,
-        ask,
-        mid,
-        spread,
-        open,
-        high,
-        low,
-        close,
-        micro,
-        candle,
-        timestamp: tick.timestamp || Date.now() / 1000,
+        [symbol]: {
+          symbol,
+          bid,
+          ask,
+          mid,
+          spread,
+          open,
+          high,
+          low,
+          close,
+          micro,
+          candle: {
+            open,
+            high,
+            low,
+            close,
+            timestamp: candleTimestamp,
+          },
+          candles: allCandles,
+          timestamp: tick.timestamp || Math.floor(Date.now() / 1000),
+        },
       },
     };
   }
@@ -70,52 +114,34 @@ function normalize(raw: any) {
     const ask = typeof d.ask === 'number' && !isNaN(d.ask) ? d.ask : 0;
     const mid = typeof d.mid === 'number' && !isNaN(d.mid) ? d.mid : (bid > 0 && ask > 0 ? (bid + ask) / 2 : 0);
     const spread = typeof d.spread === 'number' && !isNaN(d.spread) ? d.spread : (bid > 0 && ask > 0 ? ask - bid : 0);
-    const candle = extractLatestCandle(d.candle);
+    
+    let candle: any = null;
+    if (d.candle && typeof d.candle.open === 'number') {
+      candle = d.candle;
+    }
+    
     return {
       type: 'market_data',
       data: {
-        symbol: d.symbol,
-        bid,
-        ask,
-        mid,
-        spread,
-        micro: d.micro,
-        candle,
-        timestamp: d.timestamp || Date.now() / 1000,
+        [d.symbol]: {
+          symbol: d.symbol,
+          bid,
+          ask,
+          mid,
+          spread,
+          open: candle?.open || mid,
+          high: candle?.high || mid,
+          low: candle?.low || mid,
+          close: candle?.close || mid,
+          micro: d.micro,
+          candle: candle || { open: mid, high: mid, low: mid, close: mid, timestamp: Math.floor(Date.now() / 1000) },
+          candles: d.candles || {},
+          timestamp: d.timestamp || Math.floor(Date.now() / 1000),
+        },
       },
     };
   }
   
   // Fallback: return as-is
   return raw;
-}
-
-function extractLatestCandle(candles: any): any | undefined {
-  if (!candles || typeof candles !== 'object') return undefined;
-  if (
-    typeof candles.open === 'number' &&
-    typeof candles.high === 'number' &&
-    typeof candles.low === 'number' &&
-    typeof candles.close === 'number' &&
-    typeof candles.timestamp === 'number'
-  ) {
-    return candles;
-  }
-  const tf = candles['1m'] ? '1m' : Object.keys(candles)[0];
-  if (!tf) return undefined;
-  const buckets = candles[tf];
-  if (!buckets || typeof buckets !== 'object') return undefined;
-  const keys = Object.keys(buckets).map((k) => Number(k)).filter((n) => !Number.isNaN(n));
-  if (keys.length === 0) return undefined;
-  const latestTs = Math.max(...keys);
-  const c = buckets[String(latestTs)] || buckets[latestTs];
-  if (!c) return undefined;
-  return {
-    open: Number(c.open) || 0,
-    high: Number(c.high) || 0,
-    low: Number(c.low) || 0,
-    close: Number(c.close) || 0,
-    timestamp: Number(c.timestamp) || latestTs,
-    timeframe: tf,
-  };
 }

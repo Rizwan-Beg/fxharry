@@ -71,8 +71,8 @@ wss.on('connection', (ws: WebSocket, req) => {
       const data = JSON.parse(msg.toString());
       messageCount++;
       
-      // If message has type 'tick', it's from Python backend
-      if (data.type === 'tick' || data.type === 'market_data') {
+      // If message has type 'tick', it's from Python backend (Python sends type: 'tick')
+      if (data.type === 'tick') {
         if (!isPythonBackend) {
           // First tick message from this connection - mark as Python backend
           isPythonBackend = true;

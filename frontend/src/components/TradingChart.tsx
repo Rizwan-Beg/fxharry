@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useMemo } from 'react';
 import { Activity } from 'lucide-react';
 import PriceChart from './PriceChart';
@@ -46,24 +47,40 @@ export function TradingChart({ symbol, marketData, signals }: TradingChartProps)
     }
     
     const data = marketData;
-    const candle = (data.candle && typeof data.candle.timestamp === 'number' && typeof data.candle.open === 'number')
-      ? data.candle
-      : {
-          open: Number(data.open ?? data.mid ?? data.bid) || 0,
-          high: Number(data.high ?? data.mid ?? data.ask) || 0,
-          low: Number(data.low ?? data.mid ?? data.bid) || 0,
-          close: Number(data.close ?? data.mid ?? data.ask) || 0,
-          timestamp: typeof data.timestamp === 'number' ? Math.floor(data.timestamp) : Math.floor(Date.now() / 1000),
-        };
+    
+    // Try to get candle data from various sources
+    let candle: any = null;
+    if (data.candle && typeof data.candle.open === 'number' && typeof data.candle.timestamp === 'number') {
+      candle = data.candle;
+    } else if (data.candles && data.candles['1m'] && typeof data.candles['1m'].open === 'number') {
+      candle = data.candles['1m'];
+    }
+    
+    // Fallback: construct from tick data if no candle
+    if (!candle || typeof candle.open !== 'number') {
+      candle = {
+        open: Number(data.open ?? data.mid ?? data.bid) || 0,
+        high: Number(data.high ?? data.mid ?? data.ask) || 0,
+        low: Number(data.low ?? data.mid ?? data.bid) || 0,
+        close: Number(data.close ?? data.mid ?? data.ask) || 0,
+        timestamp: typeof data.timestamp === 'number' ? Math.floor(data.timestamp) : Math.floor(Date.now() / 1000),
+      };
+    }
     
     if (candle && typeof candle.open === 'number' && typeof candle.high === 'number' && 
         typeof candle.low === 'number' && typeof candle.close === 'number' && 
-        candle.timestamp && typeof candle.timestamp === 'number') {
+        typeof candle.timestamp === 'number') {
+      
       if (!candleCache[symbol]) {
         candleCache[symbol] = [];
       }
       
-      const timestamp = Math.floor((candle.timestamp as number) / 60) * 60;
+      // Ensure timestamp is in Unix format (seconds)
+      let timestamp = Math.floor(candle.timestamp as number);
+      if (timestamp > 1000000000000) {
+        // If timestamp is in milliseconds, convert to seconds
+        timestamp = Math.floor(timestamp / 1000);
+      }
       
       const existingIndex = candleCache[symbol].findIndex(
         (c: any) => c.time === timestamp
@@ -77,8 +94,12 @@ export function TradingChart({ symbol, marketData, signals }: TradingChartProps)
         close: Number(candle.close) || 0,
       };
       
-      if (chartCandle.open > 0 && chartCandle.high > 0 && chartCandle.low > 0 && chartCandle.close > 0) {
+      // Validate candle values before adding
+      if (chartCandle.open > 0 && chartCandle.high > 0 && chartCandle.low > 0 && chartCandle.close > 0 &&
+          chartCandle.high >= chartCandle.low && chartCandle.high >= chartCandle.open && chartCandle.high >= chartCandle.close) {
+        
         if (existingIndex >= 0) {
+          // Update existing candle
           const prev = candleCache[symbol][existingIndex];
           candleCache[symbol][existingIndex] = {
             time: prev.time,
@@ -88,12 +109,14 @@ export function TradingChart({ symbol, marketData, signals }: TradingChartProps)
             close: chartCandle.close,
           };
         } else {
+          // Add new candle
           candleCache[symbol].push(chartCandle);
           if (candleCache[symbol].length > 500) {
             candleCache[symbol] = candleCache[symbol].slice(-500);
           }
         }
         
+        // Sort by time
         candleCache[symbol].sort((a: any, b: any) => a.time - b.time);
       }
     }
