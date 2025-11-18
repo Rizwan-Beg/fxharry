@@ -1,111 +1,97 @@
-import { useEffect, useRef } from "react";
-import { createChart, IChartApi, ISeriesApi, Time, CandlestickData } from "lightweight-charts";
+import React, { useEffect, useRef } from "react";
+import { createChart, IChartApi, ISeriesApi, Time } from "lightweight-charts";
+console.log("[DEBUG] createChart =", createChart);
+console.log("[DEBUG] typeof createChart =", typeof createChart);
 
-// Local narrow type for charts that support adding a candlestick series
-type ChartWithSeries = IChartApi & {
-  addCandlestickSeries: (opts: Record<string, unknown>) => ISeriesApi<"Candlestick">;
-};
 
 interface Props {
-  candles: CandlestickData<Time>[];
+  data: { time: Time; value: number }[];
   height?: number;
 }
 
-export default function PriceChart({ candles, height = 320 }: Props) {
+export default function PriceChart({ data, height = 300 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
-  const lastCandleCountRef = useRef<number>(0);
+  const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
 
+  // Initialize chart
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
-    const tryInit = () => {
-      if (chartRef.current || !containerRef.current) return;
-      const w = containerRef.current.clientWidth;
-      if (w <= 0 || height <= 0) return;
-      try {
-        const chart = createChart(containerRef.current, {
-          width: w,
-          height,
-          layout: { background: { color: "#08121a" }, textColor: "#dbeafe" },
-          grid: { vertLines: { color: "rgba(255,255,255,0.03)" }, horzLines: { color: "rgba(255,255,255,0.03)" } },
-          crosshair: { mode: 1 },
-          timeScale: { timeVisible: true, secondsVisible: false },
-        });
+    const width = el.clientWidth || 400;
 
-        const chartWithSeries = chart as unknown as ChartWithSeries;
-        // Defensive: ensure chart exposes addCandlestickSeries before using it
-        if (typeof chartWithSeries.addCandlestickSeries !== 'function') {
-          console.error('[PriceChart] createChart returned unexpected object (no addCandlestickSeries). Skipping chart creation.');
-          chartRef.current = null;
-          seriesRef.current = null;
-          return;
-        }
+    const chart = createChart(el, {
+      width,
+      height,
+      layout: {
+        background: { color: "#08121a" },
+        textColor: "#dbeafe",
+      },
+      grid: {
+        vertLines: { color: "rgba(255,255,255,0.08)" },
+        horzLines: { color: "rgba(255,255,255,0.08)" },
+      },
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: true,
+      },
+     
+ 
+    }
+  );
+      console.log("[DEBUG] chart returned =", chart);
+      console.log("[DEBUG] chart keys =", Object.keys(chart));
+      console.log("CHART METHODS:", Object.keys(chart));
 
-        chartRef.current = chart;
-        seriesRef.current = chartWithSeries.addCandlestickSeries({
-          upColor: "#10b981",
-          downColor: "#ef4444",
-          borderUpColor: "#10b981",
-          borderDownColor: "#ef4444",
-          wickUpColor: "#10b981",
-          wickDownColor: "#ef4444",
-        });
-      } catch (err) {
-        console.error('[PriceChart] Error creating chart:', err);
-        chartRef.current = null;
-        seriesRef.current = null;
-      }
-    };
 
-    tryInit();
+    const lineSeries = chart.addLineSeries({
+      color: "#4ade80",
+      lineWidth: 2,
+    });
+
+    chartRef.current = chart;
+    seriesRef.current = lineSeries;
 
     const ro = new ResizeObserver(() => {
-      if (!containerRef.current) return;
-      const w = containerRef.current.clientWidth;
-      if (chartRef.current) {
-        chartRef.current.applyOptions({ width: w });
-      } else {
-        tryInit();
+      if (chartRef.current && containerRef.current) {
+        chartRef.current.applyOptions({
+          width: containerRef.current.clientWidth,
+        });
       }
     });
+
     ro.observe(el);
+
     return () => {
       ro.disconnect();
-      if (chartRef.current) {
-        try {
-          chartRef.current.remove();
-        } catch (e) {
-          void e;
-        }
-      }
+      chart.remove();
       chartRef.current = null;
       seriesRef.current = null;
-      lastCandleCountRef.current = 0;
     };
   }, [height]);
 
+  // Update chart data
   useEffect(() => {
-    const series = seriesRef.current;
-    if (!series) return;
-    if (!Array.isArray(candles) || candles.length === 0) {
-      series.setData([]);
-      lastCandleCountRef.current = 0;
-      return;
-    }
-    if (lastCandleCountRef.current === 0 || candles.length < lastCandleCountRef.current) {
-      series.setData(candles);
-      lastCandleCountRef.current = candles.length;
-      return;
-    }
-    const last = candles[candles.length - 1];
-    series.update(last);
-    lastCandleCountRef.current = candles.length;
-  }, [candles]);
+    if (!seriesRef.current) return;
 
-  const containerStyle: React.CSSProperties = { width: "100%", height };
-  // eslint-disable-next-line react/style-prop-object
-  return <div ref={containerRef} style={containerStyle} />;
+    if (!data || data.length === 0) {
+      seriesRef.current.setData([]);
+      return;
+    }
+
+    if (data.length === 1) {
+      seriesRef.current.setData(data);
+      return;
+    }
+
+    seriesRef.current.update(data[data.length - 1]);
+  }, [data]);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ width: "100%", height }}
+    />
+  );
 }

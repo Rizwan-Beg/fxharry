@@ -12,8 +12,9 @@ type MarketDataBySymbol = {
     high?: number;
     low?: number;
     close?: number;
-  candle?: Record<string, unknown> | undefined;
-  micro?: Record<string, unknown> | undefined;
+    candle?: Record<string, unknown>;
+    candles?: Record<string, unknown>;
+    micro?: Record<string, unknown>;
     timestamp?: number;
   };
 };
@@ -23,7 +24,11 @@ export function useLiveFeed() {
   const [signals, setSignals] = useState<unknown[]>([]);
   const [notifications, setNotifications] = useState<unknown[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<string>("EURUSD");
-  const [connectionStatus, setConnectionStatus] = useState({ ibkr: false, websocket: false, market_data: false });
+  const [connectionStatus, setConnectionStatus] = useState({
+    ibkr: false,
+    websocket: false,
+    market_data: false,
+  });
 
   const wsRef = useRef<WebSocket | null>(null);
   const connectingRef = useRef<boolean>(false);
@@ -32,20 +37,27 @@ export function useLiveFeed() {
 
   const connect = useCallback(() => {
     if (connectingRef.current) return;
+
     const existing = wsRef.current;
-    if (existing && (existing.readyState === WebSocket.OPEN || existing.readyState === WebSocket.CONNECTING)) return;
+    if (
+      existing &&
+      (existing.readyState === WebSocket.OPEN ||
+        existing.readyState === WebSocket.CONNECTING)
+    )
+      return;
+
     connectingRef.current = true;
-    
+
     const wsUrl = WS_URL;
     console.log(`[useLiveFeed] Connecting to WebSocket: ${wsUrl}`);
-    
+
     const socket = new WebSocket(wsUrl);
     wsRef.current = socket;
 
     socket.onopen = () => {
       connectingRef.current = false;
       setConnectionStatus((prev) => ({ ...prev, websocket: true }));
-      console.log('[useLiveFeed] ✅ WebSocket connection established');
+      console.log("[useLiveFeed] ✅ WebSocket connection established");
       messageCountRef.current = 0;
       if (reconnectTimerRef.current) {
         clearTimeout(reconnectTimerRef.current);
@@ -57,103 +69,178 @@ export function useLiveFeed() {
       try {
         messageCountRef.current++;
         const msg = JSON.parse(ev.data);
-        
-        // Log every 50th message to avoid console spam
+
+        // Light debug every 50th message
         if (messageCountRef.current % 50 === 0) {
-          console.log(`[useLiveFeed] Received message #${messageCountRef.current}:`, {
-            type: msg.type,
-            symbol: msg.data?.symbol,
-            hasCandle: !!msg.data?.candle,
-            bid: msg.data?.bid,
-            ask: msg.data?.ask,
-          });
-        }
-        
-        if (msg.type === "welcome") {
-          console.log('[useLiveFeed] Received welcome message');
-          return;
-        }
-        
-        if (msg.type === "market_data" && msg.data) {
-          // Sanitize and coerce numeric fields to avoid runtime errors in components
-          const raw = msg.data;
-          const symbol = raw.symbol;
-          if (!symbol) {
-            console.warn('[useLiveFeed] Received market_data without symbol');
-            return;
-          }
+          let dbgSymbol: string | undefined;
+          let dbgHasCandle = false;
+          let dbgBid: unknown;
+          let dbgAsk: unknown;
 
-          const coerceNumber = (v: unknown) => {
-            if (v === null || v === undefined || v === '') return undefined;
-            const n = Number(v);
-            return Number.isFinite(n) ? n : undefined;
-          };
-
-          const sanitized: Record<string, unknown> = {
-            symbol,
-            bid: coerceNumber(raw.bid),
-            ask: coerceNumber(raw.ask),
-            mid: coerceNumber(raw.mid),
-            spread: coerceNumber(raw.spread),
-            open: coerceNumber(raw.open),
-            high: coerceNumber(raw.high),
-            low: coerceNumber(raw.low),
-            close: coerceNumber(raw.close),
-            timestamp: coerceNumber(raw.timestamp) || (raw.candle?.timestamp ? coerceNumber(raw.candle.timestamp) : undefined),
-            candle: undefined,
-            candles: undefined,
-            micro: raw.micro || raw.micro || undefined,
-          };
-
-          // Normalize single candle if present
-          if (raw.candle && typeof raw.candle === 'object') {
-            const c = raw.candle;
-            const ts = coerceNumber(c.timestamp) || coerceNumber(c.time) || undefined;
-            sanitized.candle = {
-              open: coerceNumber(c.open),
-              high: coerceNumber(c.high),
-              low: coerceNumber(c.low),
-              close: coerceNumber(c.close),
-              timestamp: ts,
-            };
-          }
-
-          // Normalize candles map if present (e.g., candles['1m'])
-          if (raw.candles && typeof raw.candles === 'object') {
-            sanitized.candles = {} as Record<string, unknown>;
-            for (const k of Object.keys(raw.candles)) {
-              const v = raw.candles[k];
-              if (v && typeof v === 'object') {
-                const vRec = v as Record<string, unknown>;
-                const ts = coerceNumber(vRec.timestamp) || coerceNumber(vRec.time) || undefined;
-                (sanitized.candles as Record<string, Record<string, unknown>>)[k] = {
-                  open: coerceNumber(vRec.open),
-                  high: coerceNumber(vRec.high),
-                  low: coerceNumber(vRec.low),
-                  close: coerceNumber(vRec.close),
-                  timestamp: ts,
-                };
+          if (msg.type === "market_data" && msg.data) {
+            const d: any = msg.data;
+            if (d.symbol) {
+              dbgSymbol = d.symbol;
+              dbgHasCandle = !!d.candle;
+              dbgBid = d.bid;
+              dbgAsk = d.ask;
+            } else if (typeof d === "object") {
+              const firstKey = Object.keys(d)[0];
+              const first = firstKey ? d[firstKey] : undefined;
+              if (first) {
+                dbgSymbol = first.symbol || firstKey;
+                dbgHasCandle = !!first.candle;
+                dbgBid = first.bid;
+                dbgAsk = first.ask;
               }
             }
           }
 
-          setConnectionStatus((prev) => ({ ...prev, market_data: true }));
-          setMarketData((prev) => {
-            const updated = { ...prev, [symbol]: { ...(prev[symbol] || {}), ...sanitized } };
-            if (messageCountRef.current % 100 === 0) {
-              const symbolData = updated[symbol as keyof typeof updated];
-              console.log(`[useLiveFeed] Updated market data for ${symbol}:`, symbolData);
+          console.log(
+            `[useLiveFeed] Received message #${messageCountRef.current}:`,
+            {
+              type: msg.type,
+              symbol: dbgSymbol,
+              hasCandle: dbgHasCandle,
+              bid: dbgBid,
+              ask: dbgAsk,
             }
+          );
+        }
+
+        if (msg.type === "welcome") {
+          console.log("[useLiveFeed] Received welcome message");
+          return;
+        }
+
+        if (msg.type === "market_data" && msg.data) {
+          const coerceNumber = (v: unknown): number | undefined => {
+            if (v === null || v === undefined || v === "") return undefined;
+            const n = Number(v);
+            return Number.isFinite(n) ? n : undefined;
+          };
+
+          const buildSanitized = (raw: any, symbol: string) => {
+            const sanitized: Record<string, unknown> = {
+              symbol,
+              bid: coerceNumber(raw.bid),
+              ask: coerceNumber(raw.ask),
+              mid: coerceNumber(raw.mid),
+              spread: coerceNumber(raw.spread),
+              open: coerceNumber(raw.open),
+              high: coerceNumber(raw.high),
+              low: coerceNumber(raw.low),
+              close: coerceNumber(raw.close),
+              timestamp:
+                coerceNumber(raw.timestamp) ||
+                (raw.candle?.timestamp
+                  ? coerceNumber(raw.candle.timestamp)
+                  : undefined),
+              candle: undefined,
+              candles: undefined,
+              micro: raw.micro || undefined,
+            };
+
+            // Single candle
+            if (raw.candle && typeof raw.candle === "object") {
+              const c = raw.candle;
+              const ts =
+                coerceNumber(c.timestamp) ||
+                coerceNumber(c.time) ||
+                undefined;
+              sanitized.candle = {
+                open: coerceNumber(c.open),
+                high: coerceNumber(c.high),
+                low: coerceNumber(c.low),
+                close: coerceNumber(c.close),
+                timestamp: ts,
+              };
+            }
+
+            // Candles map (e.g. 1m/5m)
+            if (raw.candles && typeof raw.candles === "object") {
+              const out: Record<string, Record<string, unknown>> = {};
+              for (const k of Object.keys(raw.candles)) {
+                const v = raw.candles[k];
+                if (v && typeof v === "object") {
+                  const vRec = v as Record<string, unknown>;
+                  const ts =
+                    coerceNumber(vRec.timestamp) ||
+                    coerceNumber(vRec.time) ||
+                    undefined;
+                  out[k] = {
+                    open: coerceNumber(vRec.open),
+                    high: coerceNumber(vRec.high),
+                    low: coerceNumber(vRec.low),
+                    close: coerceNumber(vRec.close),
+                    timestamp: ts,
+                  };
+                }
+              }
+              sanitized.candles = out;
+            }
+
+            return sanitized;
+          };
+
+          const data = msg.data as any;
+          const updates: Record<string, Record<string, unknown>> = {};
+
+          // Case 1: single-object payload with .symbol
+          if (data.symbol || data.bid || data.ask || data.mid) {
+            const symbol = data.symbol || selectedSymbol || "EURUSD";
+            updates[symbol] = buildSanitized(data, symbol);
+          } else if (typeof data === "object") {
+            // Case 2: map payload: { EURUSD: { ... }, GBPUSD: { ... } }
+            for (const [symbol, value] of Object.entries(data)) {
+              if (!value || typeof value !== "object") continue;
+              updates[symbol] = buildSanitized(value as any, symbol);
+            }
+          }
+
+          const symbols = Object.keys(updates);
+          if (symbols.length === 0) {
+            console.warn(
+              "[useLiveFeed] market_data message without any usable symbols",
+              msg.data
+            );
+            return;
+          }
+
+          setConnectionStatus((prev) => ({ ...prev, market_data: true }));
+
+          setMarketData((prev) => {
+            const updated: MarketDataBySymbol = { ...prev };
+            for (const [symbol, sanitized] of Object.entries(updates)) {
+              updated[symbol] = {
+                ...(prev[symbol] || {}),
+                ...sanitized,
+              } as any;
+            }
+
+            if (messageCountRef.current % 100 === 0) {
+              const firstSymbol = symbols[0];
+              console.log(
+                `[useLiveFeed] Updated market data for ${firstSymbol}:`,
+                updated[firstSymbol]
+              );
+            }
+
             return updated;
           });
+
+          return;
         } else if (msg.type === "connection_status") {
           const st = msg.data || msg.status;
-          setConnectionStatus((prev) => ({ ...prev, ibkr: !!(st?.ibkr_connected || st?.ibkr) }));
-          console.log('[useLiveFeed] Connection status update:', st);
+          setConnectionStatus((prev) => ({
+            ...prev,
+            ibkr: !!(st?.ibkr_connected || st?.ibkr),
+          }));
+          console.log("[useLiveFeed] Connection status update:", st);
         } else if (msg.type === "signal_update") {
           const arr = Array.isArray(msg.data) ? msg.data : [];
           setSignals(arr);
-          console.log('[useLiveFeed] Received signal update:', arr);
+          console.log("[useLiveFeed] Received signal update:", arr);
         } else if (msg.type === "risk_alert") {
           setNotifications((prev) => [
             ...prev,
@@ -165,42 +252,50 @@ export function useLiveFeed() {
               timestamp: new Date().toISOString(),
             },
           ]);
-          console.warn('[useLiveFeed] Risk alert received');
+          console.warn("[useLiveFeed] Risk alert received");
         } else {
-          console.debug('[useLiveFeed] Received unknown message type:', msg.type);
+          console.debug("[useLiveFeed] Received unknown message type:", msg.type);
         }
       } catch (err) {
-        console.error('[useLiveFeed] Error parsing WebSocket message:', err, ev.data);
+        console.error(
+          "[useLiveFeed] Error parsing WebSocket message:",
+          err,
+          ev.data
+        );
       }
     };
 
     socket.onerror = (err) => {
-      console.error('[useLiveFeed] WebSocket error:', err);
+      console.error("[useLiveFeed] WebSocket error:", err);
     };
 
     socket.onclose = () => {
-      console.log('[useLiveFeed] WebSocket disconnected');
-      setConnectionStatus((prev) => ({ ...prev, websocket: false, market_data: false }));
+      console.log("[useLiveFeed] WebSocket disconnected");
+      setConnectionStatus((prev) => ({
+        ...prev,
+        websocket: false,
+        market_data: false,
+      }));
       if (reconnectTimerRef.current) return;
-      console.log('[useLiveFeed] Attempting to reconnect in 3 seconds...');
+      console.log("[useLiveFeed] Attempting to reconnect in 3 seconds...");
       reconnectTimerRef.current = window.setTimeout(() => {
         reconnectTimerRef.current = null;
         connect();
       }, 3000);
     };
-  }, []);
+  }, [selectedSymbol]);
 
   useEffect(() => {
-    console.log('[useLiveFeed] Hook mounted, initiating connection...');
+    console.log("[useLiveFeed] Hook mounted, initiating connection...");
     connect();
     return () => {
       const ws = wsRef.current;
       if (ws && ws.readyState === WebSocket.OPEN) {
         try {
           ws.close();
-          console.log('[useLiveFeed] WebSocket closed on unmount');
+          console.log("[useLiveFeed] WebSocket closed on unmount");
         } catch (err) {
-          console.debug('[useLiveFeed] Error closing WebSocket:', err);
+          console.debug("[useLiveFeed] Error closing WebSocket:", err);
         }
       }
       if (reconnectTimerRef.current) {
@@ -208,17 +303,28 @@ export function useLiveFeed() {
         reconnectTimerRef.current = null;
       }
     };
-  }, [connect]);
+  }, []);
 
   const subscribeToSymbol = useCallback((symbol: string) => {
     console.log(`[useLiveFeed] Subscribing to symbol: ${symbol}`);
     setSelectedSymbol(symbol);
   }, []);
 
-  const unsubscribeFromSymbol = useCallback((symbol: string) => {
-    console.log(`[useLiveFeed] Unsubscribing from symbol: ${symbol}`);
-    if (selectedSymbol === symbol) setSelectedSymbol("EURUSD");
-  }, [selectedSymbol]);
+  const unsubscribeFromSymbol = useCallback(
+    (symbol: string) => {
+      console.log(`[useLiveFeed] Unsubscribing from symbol: ${symbol}`);
+      if (selectedSymbol === symbol) setSelectedSymbol("EURUSD");
+    },
+    [selectedSymbol]
+  );
 
-  return { marketData, signals, notifications, connectionStatus, selectedSymbol, subscribeToSymbol, unsubscribeFromSymbol };
+  return {
+    marketData,
+    signals,
+    notifications,
+    connectionStatus,
+    selectedSymbol,
+    subscribeToSymbol,
+    unsubscribeFromSymbol,
+  };
 }
