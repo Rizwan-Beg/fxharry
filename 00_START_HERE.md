@@ -29,7 +29,7 @@ IBKR → Python (✅ working)
 ### Step 1: Start Services (3 terminals)
 ```bash
 # Terminal 1: Python
-python -m ibkr_streaming.run
+python3 -m ibkr_streaming.run
 
 # Terminal 2: Node
 npm start (in node_gateway)
