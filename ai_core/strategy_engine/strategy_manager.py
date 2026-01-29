@@ -3,6 +3,7 @@
 from .feature_engine import FeatureEngine
 from .strategies.sma_crossover import SMACrossoverStrategy
 from .strategies.rsi_reversal import RSIReversalStrategy
+from .strategies.demo_strategy import DemoStrategy
 
 class StrategyManager:
     def __init__(self):
@@ -11,6 +12,7 @@ class StrategyManager:
         self.strategies = {
             "sma": SMACrossoverStrategy(),
             "rsi": RSIReversalStrategy(),
+            "demo": DemoStrategy(),
         }
 
     def process_tick(self, symbol, price):

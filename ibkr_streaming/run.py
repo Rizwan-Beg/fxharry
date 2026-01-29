@@ -12,6 +12,8 @@ from .candle_engine import CandleEngine
 from .microstructure import compute_microstructure
 from .ws_push import push
 from .logger import get_logger
+from ai_core.strategy_engine.strategy_manager import StrategyManager
+from ai_core.strategy_engine.signal_router import SignalRouter
 
 logger = get_logger(__name__)
 
@@ -49,6 +51,10 @@ async def main():
         
         logger.info("Initializing CandleEngine...")
         candle_engine = CandleEngine()
+
+        logger.info("Initializing Strategy Engine...")
+        strategy_manager = StrategyManager()
+        signal_router = SignalRouter(ws_broadcaster=push)
         
         logger.info("Starting market data subscriptions...")
         await tick_stream.start()
@@ -80,6 +86,12 @@ async def main():
                         # Update candles (will skip if price is invalid)
                         candles = candle_engine.update(tick)
                         micro = compute_microstructure(tick)
+
+                        # Process Strategy Engine
+                        signals = strategy_manager.process_tick(sym, tick['mid'])
+                        if signals:
+                            logger.info(f"Signals generated for {sym}: {signals}")
+                            await signal_router.broadcast_signals(signals)
                         
                         tick_count += 1
                         

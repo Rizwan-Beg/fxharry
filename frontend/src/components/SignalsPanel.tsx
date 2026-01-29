@@ -66,7 +66,7 @@ export function SignalsPanel({ signals = [] }: SignalsPanelProps) {
               <div className="grid grid-cols-2 gap-2 text-xs text-gray-400">
                 <div>
                   <span>Strategy:</span>
-                  <span className="ml-1 text-white">AI-{signal.strategy_id}</span>
+                  <span className="ml-1 text-white">{signal.strategy_id}</span>
                 </div>
                 <div>
                   <span>Time:</span>
@@ -74,6 +74,11 @@ export function SignalsPanel({ signals = [] }: SignalsPanelProps) {
                     {new Date(signal.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
+              </div>
+              
+              {/* Reason Display */}
+              <div className="mt-2 text-xs text-gray-300 bg-gray-800 p-1.5 rounded border border-gray-600">
+                {signal.reason}
               </div>
 
               {/* Confidence Bar */}

@@ -43,14 +43,26 @@ export function StrategiesPanel() {
         total_pnl: 5678.90,
         sharpe_ratio: 2.1,
         max_drawdown: 0.05
+      },
+      {
+        id: 4,
+        name: 'SMA Crossover Strategy',
+        description: 'Classic trend-following strategy using SMA20 and SMA50',
+        strategy_type: 'python',
+        is_active: true,
+        total_trades: 42,
+        winning_trades: 28,
+        total_pnl: 890.50,
+        sharpe_ratio: 1.15,
+        max_drawdown: 0.09
       }
     ]);
   }, []);
 
   const toggleStrategy = async (strategyId: number) => {
-    setStrategies(prev => 
-      prev.map(strategy => 
-        strategy.id === strategyId 
+    setStrategies(prev =>
+      prev.map(strategy =>
+        strategy.id === strategyId
           ? { ...strategy, is_active: !strategy.is_active }
           : strategy
       )
@@ -71,7 +83,7 @@ export function StrategiesPanel() {
   };
 
   const getWinRate = (strategy: any) => {
-    return strategy.total_trades > 0 
+    return strategy.total_trades > 0
       ? (strategy.winning_trades / strategy.total_trades * 100).toFixed(1)
       : '0.0';
   };
@@ -84,7 +96,7 @@ export function StrategiesPanel() {
           <Brain className="h-6 w-6 text-purple-400" />
           <h2 className="text-2xl font-bold">AI Trading Strategies</h2>
         </div>
-        
+
         <div className="flex space-x-3">
           <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
             <Upload className="h-4 w-4" />
@@ -141,11 +153,10 @@ export function StrategiesPanel() {
         {strategies.map((strategy) => (
           <div
             key={strategy.id}
-            className={`bg-gray-800 rounded-lg p-6 border transition-colors ${
-              strategy.is_active 
-                ? 'border-green-500 bg-green-900/10' 
+            className={`bg-gray-800 rounded-lg p-6 border transition-colors ${strategy.is_active
+                ? 'border-green-500 bg-green-900/10'
                 : 'border-gray-700 hover:border-gray-600'
-            }`}
+              }`}
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
@@ -155,23 +166,21 @@ export function StrategiesPanel() {
                   <p className="text-sm text-gray-400">{strategy.description}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-3">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  strategy.is_active 
-                    ? 'bg-green-900 text-green-400' 
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${strategy.is_active
+                    ? 'bg-green-900 text-green-400'
                     : 'bg-gray-700 text-gray-400'
-                }`}>
+                  }`}>
                   {strategy.is_active ? 'ACTIVE' : 'INACTIVE'}
                 </span>
-                
+
                 <button
                   onClick={() => toggleStrategy(strategy.id)}
-                  className={`p-2 rounded-lg transition-colors ${
-                    strategy.is_active
+                  className={`p-2 rounded-lg transition-colors ${strategy.is_active
                       ? 'bg-red-600 hover:bg-red-700 text-white'
                       : 'bg-green-600 hover:bg-green-700 text-white'
-                  }`}
+                    }`}
                 >
                   {strategy.is_active ? (
                     <Pause className="h-4 w-4" />
@@ -188,30 +197,29 @@ export function StrategiesPanel() {
                 <div className="text-sm text-gray-400">Total Trades</div>
                 <div className="text-lg font-semibold">{strategy.total_trades}</div>
               </div>
-              
+
               <div className="text-center">
                 <div className="text-sm text-gray-400">Win Rate</div>
                 <div className="text-lg font-semibold text-green-400">
                   {getWinRate(strategy)}%
                 </div>
               </div>
-              
+
               <div className="text-center">
                 <div className="text-sm text-gray-400">Total P&L</div>
-                <div className={`text-lg font-semibold ${
-                  strategy.total_pnl >= 0 ? 'text-green-400' : 'text-red-400'
-                }`}>
+                <div className={`text-lg font-semibold ${strategy.total_pnl >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
                   ${strategy.total_pnl.toFixed(2)}
                 </div>
               </div>
-              
+
               <div className="text-center">
                 <div className="text-sm text-gray-400">Sharpe Ratio</div>
                 <div className="text-lg font-semibold text-blue-400">
                   {strategy.sharpe_ratio.toFixed(2)}
                 </div>
               </div>
-              
+
               <div className="text-center">
                 <div className="text-sm text-gray-400">Max Drawdown</div>
                 <div className="text-lg font-semibold text-red-400">

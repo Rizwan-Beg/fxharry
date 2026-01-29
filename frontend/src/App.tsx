@@ -15,19 +15,19 @@ function App() {
   // NEW: Selected symbol for chart switching
   const [selectedSymbol, setSelectedSymbol] = useState('EURUSD');
 
-  const { 
-    marketData, 
-    signals, 
-    notifications, 
+  const {
+    marketData,
+    signals,
+    notifications,
     connectionStatus,
     subscribeToSymbol,
     unsubscribeFromSymbol,
   } = useLiveFeed();
-  
-  const { 
-    accountData, 
-    positions, 
-    riskAssessment 
+
+  const {
+    accountData,
+    positions,
+    riskAssessment
   } = useMarketData();
 
   // If your useWebSocket exposes a subscribe function, call it when symbol changes.
@@ -45,13 +45,13 @@ function App() {
   }, [selectedSymbol]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white text-lg"> 
-      
+    <div className="min-h-screen bg-gray-900 text-white text-lg">
+
       {/* Header */}
       <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
-        
+
         <div className="flex items-center justify-between">
-          
+
           {/* Left: Title + WS Status */}
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold text-blue-400">
@@ -79,11 +79,10 @@ function App() {
             <button
               key={symbol}
               onClick={() => setSelectedSymbol(symbol)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedSymbol === symbol
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedSymbol === symbol
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              }`}
+                }`}
             >
               {symbol}
             </button>
@@ -101,11 +100,10 @@ function App() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                activeTab === tab.id
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === tab.id
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-400 hover:text-white hover:bg-gray-700'
-              }`}
+                }`}
             >
               {tab.label}
             </button>
@@ -118,7 +116,7 @@ function App() {
 
         {/* Dashboard renders the REAL chart now */}
         {activeTab === 'dashboard' && (
-          <TradingDashboard 
+          <TradingDashboard
             marketData={marketData}
             signals={signals}
             positions={positions}
@@ -130,7 +128,7 @@ function App() {
         {activeTab === 'strategies' && <StrategiesPanel />}
         {activeTab === 'backtesting' && <BacktestingPanel />}
         {activeTab === 'risk' && (
-          <RiskManagement 
+          <RiskManagement
             riskAssessment={riskAssessment}
             positions={positions}
           />

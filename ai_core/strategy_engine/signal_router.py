@@ -4,7 +4,7 @@ class SignalRouter:
     def __init__(self, ws_broadcaster):
         self.ws_broadcaster = ws_broadcaster
 
-    def broadcast_signals(self, signals):
+    async def broadcast_signals(self, signals):
         if not signals:
             return
 
@@ -13,4 +13,4 @@ class SignalRouter:
             "data": signals
         }
 
-        self.ws_broadcaster(payload)
+        await self.ws_broadcaster(payload)

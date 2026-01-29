@@ -54,23 +54,23 @@ wss.on('connection', (ws: WebSocket, req) => {
   let isPythonBackend = false;
   let messageCount = 0;
   let loggedConnection = false; // Track if we've logged this connection
-  
+
   // Send welcome message
   try {
     ws.send(JSON.stringify({ type: 'welcome', ts: Date.now() }));
   } catch (err) {
     // Connection might be closed already
   }
-  
+
   // Tentatively add to client manager so broadcasts reach frontend immediately
   clientManager.addClient(ws);
-  
+
   // Handle incoming messages
   ws.on('message', (msg: Buffer) => {
     try {
       const data = JSON.parse(msg.toString());
       messageCount++;
-      
+
       // If message has type 'tick', it's from Python backend (Python sends type: 'tick')
       if (data.type === 'tick') {
         if (!isPythonBackend) {
@@ -78,12 +78,12 @@ wss.on('connection', (ws: WebSocket, req) => {
           isPythonBackend = true;
           // Remove from client manager; this is a backend stream
           clientManager.removeClient(ws);
-          
+
           // Close old Python connection if exists and is different
           if (pythonConnection && pythonConnection !== ws && pythonConnection.readyState === WebSocket.OPEN) {
             try {
               pythonConnection.close();
-            } catch {}
+            } catch { }
           }
           pythonConnection = ws;
           if (!loggedConnection) {
@@ -96,6 +96,10 @@ wss.on('connection', (ws: WebSocket, req) => {
           console.log(`📊 Received market data from Python: ${data.symbol || 'unknown'} (${messageCount} messages)`);
         }
         broadcastMarketData(data);
+      } else if (data.type === 'signal_update') {
+        // Also broadcast signals from Python
+        console.log(`🔔 Received signal update from Python: ${data.data?.length} signals`);
+        broadcastMarketData(data);
       } else {
         // Frontend message - add to client manager if not already added
         if (!isPythonBackend && !loggedConnection) {
@@ -107,7 +111,7 @@ wss.on('connection', (ws: WebSocket, req) => {
       console.error('Error parsing WebSocket message:', err);
     }
   });
-  
+
   ws.on('close', () => {
     if (isPythonBackend && pythonConnection === ws) {
       pythonConnection = null;
@@ -117,7 +121,7 @@ wss.on('connection', (ws: WebSocket, req) => {
       clientManager.removeClient(ws);
     }
   });
-  
+
   ws.on('error', (err) => {
     console.error('WebSocket error:', err);
     // Remove from client manager on error

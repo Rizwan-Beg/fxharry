@@ -52,7 +52,7 @@ export function useMarketData() {
         unrealized_pnl: prev.unrealized_pnl + (Math.random() - 0.5) * 50
       }));
 
-      setPositions((prev: any[]) => 
+      setPositions((prev: any[]) =>
         prev.map(pos => ({
           ...pos,
           unrealized_pnl: pos.unrealized_pnl + (Math.random() - 0.5) * 20
