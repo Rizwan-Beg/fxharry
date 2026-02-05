@@ -1,9 +1,10 @@
 # ai_core/strategy_engine/strategy_manager.py
 
-from .feature_engine import FeatureEngine
+from .core.feature_engine import FeatureEngine
 from .strategies.sma_crossover import SMACrossoverStrategy
 from .strategies.rsi_reversal import RSIReversalStrategy
 from .strategies.demo_strategy import DemoStrategy
+from .strategies.ema_crossover_filter import EMACrossoverFilter
 
 class StrategyManager:
     def __init__(self):
@@ -13,6 +14,7 @@ class StrategyManager:
             "sma": SMACrossoverStrategy(),
             "rsi": RSIReversalStrategy(),
             "demo": DemoStrategy(),
+            "ema_filter": EMACrossoverFilter(),
         }
 
     def process_tick(self, symbol, price):
