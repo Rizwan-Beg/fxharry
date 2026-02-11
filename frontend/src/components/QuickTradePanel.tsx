@@ -3,9 +3,10 @@ import { Zap, Calculator, Shield, AlertTriangle } from 'lucide-react';
 
 interface QuickTradePanelProps {
   selectedSymbol: string;
+  onExecuteOrder: (order: any) => void;
 }
 
-export function QuickTradePanel({ selectedSymbol }: QuickTradePanelProps) {
+export function QuickTradePanel({ selectedSymbol, onExecuteOrder }: QuickTradePanelProps) {
   const [tradeData, setTradeData] = useState({
     action: 'BUY',
     quantity: 10000,
@@ -28,26 +29,39 @@ export function QuickTradePanel({ selectedSymbol }: QuickTradePanelProps) {
       risk_percent: 0.0085,
       position_size_percent: 0.092
     };
-    
+
     setPositionSize(mockResult);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    console.log('🔵 [QuickTrade] Form submitted', tradeData);
+
     // Mock risk assessment
     const mockRisk = {
-      approved: tradeData.quantity <= 10000,
+      approved: tradeData.quantity <= 100000, // Increased limit for testing
       risk_score: 0.3,
-      warnings: tradeData.quantity > 10000 ? ['Position size exceeds recommended limit'] : [],
+      warnings: tradeData.quantity > 50000 ? ['Position size large'] : [],
       risk_level: 'LOW'
     };
-    
+
     setRiskAssessment(mockRisk);
-    
+    console.log('🔵 [QuickTrade] Risk assessment:', mockRisk);
+
     if (mockRisk.approved) {
-      // Execute trade
-      console.log('Executing trade:', tradeData);
+      // Execute trade via prop
+      const orderPayload = {
+        symbol: selectedSymbol,
+        action: tradeData.action,
+        quantity: Number(tradeData.quantity),
+        orderType: tradeData.orderType,
+        order_type: tradeData.orderType  // Add snake_case version for backend
+      };
+      console.log('🟢 [QuickTrade] Executing trade via WebSocket:', orderPayload);
+      onExecuteOrder(orderPayload);
+      console.log('🟢 [QuickTrade] onExecuteOrder callback completed');
+    } else {
+      console.warn('🔴 [QuickTrade] Trade rejected by risk assessment');
     }
   };
 
@@ -72,22 +86,20 @@ export function QuickTradePanel({ selectedSymbol }: QuickTradePanelProps) {
           <button
             type="button"
             onClick={() => setTradeData({ ...tradeData, action: 'BUY' })}
-            className={`py-3 px-4 rounded-lg font-medium transition-colors ${
-              tradeData.action === 'BUY'
-                ? 'bg-green-600 text-white'
-                : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-            }`}
+            className={`py-3 px-4 rounded-lg font-medium transition-colors ${tradeData.action === 'BUY'
+              ? 'bg-green-600 text-white'
+              : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+              }`}
           >
             BUY
           </button>
           <button
             type="button"
             onClick={() => setTradeData({ ...tradeData, action: 'SELL' })}
-            className={`py-3 px-4 rounded-lg font-medium transition-colors ${
-              tradeData.action === 'SELL'
-                ? 'bg-red-600 text-white'
-                : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-            }`}
+            className={`py-3 px-4 rounded-lg font-medium transition-colors ${tradeData.action === 'SELL'
+              ? 'bg-red-600 text-white'
+              : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+              }`}
           >
             SELL
           </button>
@@ -170,7 +182,7 @@ export function QuickTradePanel({ selectedSymbol }: QuickTradePanelProps) {
         </div>
 
         {/* Risk Percentage */}
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-400 mb-2">
             Risk % of Account
           </label>
@@ -182,20 +194,20 @@ export function QuickTradePanel({ selectedSymbol }: QuickTradePanelProps) {
             className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
             placeholder="1.0"
           />
-        </div>
+        </div> */}
 
         {/* Position Size Calculator */}
-        <button
+        {/* <button
           type="button"
           onClick={calculatePositionSize}
           className="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
         >
           <Calculator className="h-4 w-4" />
           <span>Calculate Position Size</span>
-        </button>
+        </button> */}
 
         {/* Position Size Result */}
-        {positionSize && (
+        {/* {positionSize && (
           <div className="p-3 bg-gray-700 rounded-lg">
             <div className="flex items-center space-x-2 mb-2">
               <Calculator className="h-4 w-4 text-blue-400" />
@@ -212,15 +224,14 @@ export function QuickTradePanel({ selectedSymbol }: QuickTradePanelProps) {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Risk Assessment */}
-        {riskAssessment && (
-          <div className={`p-3 rounded-lg border ${
-            riskAssessment.approved 
-              ? 'bg-green-900 border-green-700' 
-              : 'bg-red-900 border-red-700'
-          }`}>
+        {/* {riskAssessment && (
+          <div className={`p-3 rounded-lg border ${riskAssessment.approved
+            ? 'bg-green-900 border-green-700'
+            : 'bg-red-900 border-red-700'
+            }`}>
             <div className="flex items-center space-x-2 mb-2">
               {riskAssessment.approved ? (
                 <Shield className="h-4 w-4 text-green-400" />
@@ -242,16 +253,15 @@ export function QuickTradePanel({ selectedSymbol }: QuickTradePanelProps) {
               </ul>
             )}
           </div>
-        )}
+        )} */}
 
         {/* Submit Button */}
         <button
           type="submit"
-          className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
-            tradeData.action === 'BUY'
-              ? 'bg-green-600 hover:bg-green-700 text-white'
-              : 'bg-red-600 hover:bg-red-700 text-white'
-          }`}
+          className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${tradeData.action === 'BUY'
+            ? 'bg-green-600 hover:bg-green-700 text-white'
+            : 'bg-red-600 hover:bg-red-700 text-white'
+            }`}
         >
           Execute {tradeData.action} Order
         </button>

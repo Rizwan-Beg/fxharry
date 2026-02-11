@@ -21,13 +21,13 @@ export function createWS(url?: string) {
   ws.onmessage = (ev) => {
     try {
       const msg = JSON.parse(ev.data);
-      
+
       // Handle welcome message
       if (msg.type === 'welcome') {
         console.log('WebSocket welcome received');
         return;
       }
-      
+
       // Handle market_data messages (normalized by Node Gateway)
       if (msg.type === 'market_data' && msg.data) {
         const list = listeners['market_data'] || [];
@@ -54,6 +54,13 @@ export function createWS(url?: string) {
     on(type: string, fn: (data: any) => void) {
       listeners[type] = listeners[type] || [];
       listeners[type].push(fn);
+    },
+    send(type: string, payload: any) {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type, ...payload }));
+      } else {
+        console.warn('WS not open, cannot send', type);
+      }
     },
     ws,
   };

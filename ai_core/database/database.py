@@ -7,7 +7,12 @@ from ai_core.core.config import settings
 Base = declarative_base()
 
 # Create SQLAlchemy engine using the configured database URL
-engine = create_engine(settings.database_url, pool_pre_ping=True)
+# For SQLite, we need to disable check_same_thread
+engine_kwargs = {"pool_pre_ping": True}
+if settings.database_url.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+    
+engine = create_engine(settings.database_url, **engine_kwargs)
 
 # Session factory for FastAPI dependency injection
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

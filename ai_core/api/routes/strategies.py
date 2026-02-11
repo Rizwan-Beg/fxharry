@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from ai_core.database.database import get_db
 from ai_core.database.models import Strategy
-from ai_core.strategy_engine.rule_based import StrategyManager
+from ai_core.strategy_engine.strategy_manager import StrategyManager
 from pydantic import BaseModel
 import os
 import shutil

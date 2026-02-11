@@ -28,7 +28,7 @@ export function SignalsPanel({ signals = [] }: SignalsPanelProps) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <Brain className="h-5 w-5 text-purple-400" />
-          <h3 className="text-lg font-semibold">AI Signals</h3>
+          <h3 className="text-lg font-semibold">Strategy Signals</h3>
         </div>
         <span className="text-sm text-gray-400">
           {signals.length} active

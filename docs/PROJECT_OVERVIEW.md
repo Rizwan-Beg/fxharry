@@ -88,14 +88,10 @@ graph TB
   - `signal_router.py` - Broadcasts signals to Node Gateway
   - `feature_engine.py` - Real-time technical indicator computation
   - **Strategies** (`strategies/`):
-    - `sma_crossover.py` - SMA20/SMA50 crossover strategy
-    - `rsi_reversal.py` - RSI-based reversal strategy
-    - `demo_strategy.py` - Demo strategy for testing
+    - `apex_strategy.py` - Apex V1: Multi-timeframe trend-following strategy
 - **Features Computed**:
-  - SMA (20, 50)
+  - SMA (10, 30, 50)
   - RSI (14)
-  - ATR (14)
-  - Momentum
 - **Signal Format**:
 ```json
 {
@@ -103,7 +99,7 @@ graph TB
   "signal": "BUY" | "SELL",
   "reason": "SMA20 crossed above SMA50",
   "confidence": 0.72,
-  "strategy_id": "SMA_CROSS",
+  "strategy_id": "APEX",
   "timestamp": 1704234567890
 }
 ```
@@ -183,10 +179,10 @@ graph TB
 #### Strategy Engine
 - [x] `StrategyManager` orchestration
 - [x] `FeatureEngine` for real-time indicators
-- [x] Three working strategies:
-  - SMA Crossover (SMA20/SMA50)
-  - RSI Reversal
-  - Demo Strategy
+- [x] Apex V1 strategy:
+  - Multi-timeframe (M15 bias + M5 execution)
+  - Session filtering (London/New York)
+  - Hard risk management (2% SL, 6% TP)
 - [x] Signal generation with metadata (strategy_id, reason, confidence, timestamp)
 - [x] `SignalRouter` for broadcasting signals
 - [x] Integration with IBKR streaming (`run.py`)
@@ -371,9 +367,7 @@ fxharry-main/
 │   │   ├── signal_router.py
 │   │   ├── feature_engine.py
 │   │   └── strategies/
-│   │       ├── sma_crossover.py
-│   │       ├── rsi_reversal.py
-│   │       └── demo_strategy.py
+│   │       └── apex_strategy.py
 │   ├── ml_engine/              # 🔄 ML models (placeholders)
 │   ├── genai/                  # 🔄 LLM agents (scaffolded)
 │   ├── risk_manager/           # Risk management
@@ -455,8 +449,9 @@ python -m ibkr_streaming.run
    - Real-time data normalization and broadcasting
 
 3. **AI Strategy Engine**
-   - Modular strategy framework with 3 working strategies
-   - Real-time feature computation (SMA, RSI, ATR, Momentum)
+   - Modular strategy framework with Apex V1 strategy
+   - Multi-timeframe feature computation (M5/M15)
+   - Session-aware trading (London/New York)
    - Signal generation with confidence scores and reasoning
    - Strategy signals flowing to frontend in real-time
 
@@ -496,7 +491,7 @@ python -m ibkr_streaming.run
 ### Medium-Term Goals
 
 4. **Enhanced Strategy Engine**
-   - Add 5-10 more quantitative strategies (Bollinger, MACD, Ichimoku, etc.)
+   - Add more quantitative strategies based on market conditions
    - Implement strategy auto-selection based on market regime
    - Backtesting integration for strategy validation
 

@@ -7,26 +7,27 @@ import pytz
 class MarketSession:
     """Utility class for checking market trading sessions."""
     
-    # Define major forex trading sessions in UTC
+    # Define major forex trading sessions in their LOCAL timezones
+    # Each session runs from 08:00 to 17:00 in its local timezone
     SESSIONS = {
         "london": {
-            "open": time(8, 0),   # 08:00 UTC
-            "close": time(17, 0),  # 17:00 UTC
+            "open": time(8, 0),   # 08:00 Europe/London
+            "close": time(17, 0),  # 17:00 Europe/London
             "timezone": "Europe/London"
         },
         "new_york": {
-            "open": time(13, 0),   # 13:00 UTC
-            "close": time(22, 0),  # 22:00 UTC
+            "open": time(8, 0),   # 08:00 America/New_York
+            "close": time(17, 0),  # 17:00 America/New_York
             "timezone": "America/New_York"
         },
         "tokyo": {
-            "open": time(0, 0),    # 00:00 UTC
-            "close": time(9, 0),   # 09:00 UTC
+            "open": time(8, 0),    # 08:00 Asia/Tokyo
+            "close": time(17, 0),   # 17:00 Asia/Tokyo
             "timezone": "Asia/Tokyo"
         },
         "sydney": {
-            "open": time(21, 0),   # 21:00 UTC (previous day)
-            "close": time(6, 0),   # 06:00 UTC
+            "open": time(8, 0),   # 08:00 Australia/Sydney
+            "close": time(17, 0),   # 17:00 Australia/Sydney
             "timezone": "Australia/Sydney"
         }
     }
@@ -46,27 +47,29 @@ class MarketSession:
         if current_time is None:
             current_time = datetime.now(pytz.UTC)
         
-        # Ensure we're working with UTC time
+        # Ensure we have a timezone-aware datetime
         if current_time.tzinfo is None:
             current_time = pytz.UTC.localize(current_time)
-        else:
-            current_time = current_time.astimezone(pytz.UTC)
         
         session = MarketSession.SESSIONS.get(session_name.lower())
         if not session:
             raise ValueError(f"Unknown session: {session_name}")
         
-        current_time_only = current_time.time()
+        # Convert current time to the session's local timezone
+        session_tz = pytz.timezone(session["timezone"])
+        local_time = current_time.astimezone(session_tz)
+        local_time_only = local_time.time()
+        
         open_time = session["open"]
         close_time = session["close"]
         
         # Handle sessions that cross midnight
         if open_time > close_time:
-            # Session spans midnight (e.g., Sydney: 21:00 to 06:00)
-            return current_time_only >= open_time or current_time_only < close_time
+            # Session spans midnight
+            return local_time_only >= open_time or local_time_only < close_time
         else:
-            # Normal session (e.g., London: 08:00 to 17:00)
-            return open_time <= current_time_only < close_time
+            # Normal session (e.g., London: 08:00 to 17:00 local time)
+            return open_time <= local_time_only < close_time
     
     @staticmethod
     def is_trading_allowed(allowed_sessions: list = None, current_time: datetime = None) -> dict:

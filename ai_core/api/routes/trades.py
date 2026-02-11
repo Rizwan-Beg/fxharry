@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 router = APIRouter()
-ibkr_service = IBKRService()
+ibkr_service = IBKRService(client_id=105)
 risk_manager = RiskManager()
 
 class TradeRequest(BaseModel):
@@ -26,6 +26,9 @@ class TradeRequest(BaseModel):
 async def create_trade(trade_request: TradeRequest, db: Session = Depends(get_db)):
     """Execute a new trade"""
     
+    if not ibkr_service.is_connected():
+        await ibkr_service.connect()
+
     # Risk assessment
     account_data = ibkr_service.get_account_data()
     account_value = float(account_data.get('NetLiquidation', {}).get('value', 100000))

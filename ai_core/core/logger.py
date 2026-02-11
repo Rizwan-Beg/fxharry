@@ -93,6 +93,7 @@ def configure_logging() -> None:
             datefmt="%Y-%m-%d %H:%M:%S",
         )
     )
+    console_handler.addFilter(CorrelationIdFilter())
 
     _listener = AsyncQueueListener(_queue, console_handler)
     _listener.start()

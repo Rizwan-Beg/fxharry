@@ -6,7 +6,7 @@ from ai_core.core.logger import get_logger
 from ai_core.database.models import Strategy, BacktestResult, Trade
 from ai_core.database.database import SessionLocal
 from ..strategy_engine.market_data.market_data_service import MarketDataService
-from ..strategy_engine.rule_based import StrategyManager
+from ..strategy_engine.strategy_manager import StrategyManager
 
 import asyncio
 

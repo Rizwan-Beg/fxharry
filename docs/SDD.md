@@ -477,12 +477,11 @@ class CandleBuilder:
 ai_core/strategy_engine/
 ├── strategy_manager.py      # Orchestrates all strategies
 ├── signal_router.py         # Routes signals to consumers
-├── feature_engine.py        # Computes technical indicators
+├── core/
+│   ├── feature_engine.py        # Computes technical indicators
+│   └── multi_timeframe_feature_engine.py  # M5/M15 feature engine
 ├── strategies/
-│   ├── base_strategy.py     # Abstract base class
-│   ├── sma_crossover.py     # SMA strategy
-│   ├── rsi_reversal.py      # RSI strategy
-│   └── demo_strategy.py     # Demo/testing
+│   └── apex_strategy.py     # Apex V1: Multi-timeframe strategy
 └── models/                  # Data models
 ```
 

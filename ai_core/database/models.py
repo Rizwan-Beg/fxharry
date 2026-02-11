@@ -44,9 +44,18 @@ class Trade(Base):
     entry_time = Column(DateTime, default=datetime.utcnow)
     exit_time = Column(DateTime, nullable=True)
     
+    # Execution tracking
+    broker_order_id = Column(String(50), index=True, nullable=True)
+    order_status = Column(String(20), nullable=True)  # PENDING, SUBMITTED, FILLED, etc.
+    submitted_time = Column(DateTime, nullable=True)
+    filled_time = Column(DateTime, nullable=True)
+    execution_mode = Column(String(20), nullable=True)  # PAPER, LIVE
+    rejection_reason = Column(Text, nullable=True)
+    
     # Risk metrics
     risk_score = Column(Float, default=0.0)
     position_size_percent = Column(Float, default=0.0)
+    risk_assessment = Column(JSON, nullable=True)  # Store full risk check results
     
     strategy = relationship("Strategy", back_populates="trades")
 
@@ -103,6 +112,9 @@ class AISignal(Base):
     features = Column(JSON)  # AI model input features
     model_output = Column(JSON)  # Raw model output
     is_executed = Column(Boolean, default=False)
+    execution_trade_id = Column(Integer, ForeignKey("trades.id"), nullable=True)  # Link to actual trade
+    execution_time = Column(DateTime, nullable=True)
+    rejection_reason = Column(Text, nullable=True)
 
 class AccountSnapshot(Base):
     __tablename__ = "account_snapshots"

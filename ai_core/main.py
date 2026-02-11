@@ -11,7 +11,7 @@ from .core.config import settings
 from .core.logger import get_logger, shutdown_logging
 from .database.database import engine
 from .database.models import Base
-from ai_core.strategy_engine.rule_based import StrategyManager
+from ai_core.strategy_engine.strategy_manager import StrategyManager
 from ai_core.strategy_engine.broker.ibkr_service import IBKRService
 from ai_core.strategy_engine.market_data.market_data_service import MarketDataService
 from ai_core.risk_manager.risk_manager import RiskManager

@@ -24,6 +24,9 @@ export function useLiveFeed() {
   const [signals, setSignals] = useState<unknown[]>([]);
   const [notifications, setNotifications] = useState<unknown[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<string>("EURUSD");
+  const [accountData, setAccountData] = useState<any>(null);
+  const [tradeHistory, setTradeHistory] = useState<any[]>([]);
+  const [strategies, setStrategies] = useState<any[]>([]);
   const [connectionStatus, setConnectionStatus] = useState({
     ibkr: false,
     websocket: false,
@@ -253,6 +256,18 @@ export function useLiveFeed() {
             },
           ]);
           console.warn("[useLiveFeed] Risk alert received");
+        } else if (msg.type === "account_data") {
+          setAccountData(msg.data);
+          // console.log("[useLiveFeed] Received account data");
+        } else if (msg.type === "trade_history") {
+          if (Array.isArray(msg.data)) {
+            setTradeHistory(msg.data);
+            console.log("[useLiveFeed] Received trade history update");
+          }
+        } else if (msg.type === "strategy_status") {
+          if (Array.isArray(msg.data)) {
+            setStrategies(msg.data);
+          }
         } else {
           console.debug("[useLiveFeed] Received unknown message type:", msg.type);
         }
@@ -305,6 +320,14 @@ export function useLiveFeed() {
     };
   }, []);
 
+  const send = useCallback((type: string, payload: any) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type, ...payload }));
+    } else {
+      console.warn("[useLiveFeed] WebSocket not connected, cannot send:", type);
+    }
+  }, []);
+
   const subscribeToSymbol = useCallback((symbol: string) => {
     console.log(`[useLiveFeed] Subscribing to symbol: ${symbol}`);
     setSelectedSymbol(symbol);
@@ -324,7 +347,11 @@ export function useLiveFeed() {
     notifications,
     connectionStatus,
     selectedSymbol,
+    accountData,
+    tradeHistory,
+    strategies,
     subscribeToSymbol,
     unsubscribeFromSymbol,
+    send,
   };
 }

@@ -100,6 +100,62 @@ wss.on('connection', (ws: WebSocket, req) => {
         // Also broadcast signals from Python
         console.log(`🔔 Received signal update from Python: ${data.data?.length} signals`);
         broadcastMarketData(data);
+      } else if (data.type === 'account_data') {
+        // Broadcast account data from Python
+        // console.log(`💰 Received account data from Python`); // Uncomment for debug
+        broadcastMarketData(data);
+      } else if (data.type === 'strategy_status') {
+        // Broadcast strategy status from Python
+        console.log(`🤖 Received strategy status from Python`);
+        broadcastMarketData(data);
+      } else if (data.type === 'trade_history') {
+        // Broadcast trade history from Python
+        console.log(`📜 Received trade history from Python: ${data.data?.length} trades`);
+        broadcastMarketData(data);
+      } else if (data.type === 'connection_status') {
+        // Broadcast connection status from Python
+        broadcastMarketData(data);
+      } else if (data.type === 'strategy_command') {
+        // Forward command to Python backend
+        console.log(`➡️ Forwarding strategy command to Python: ${data.command} (${data.strategy_id})`);
+
+        if (pythonConnection && pythonConnection.readyState === WebSocket.OPEN) {
+          pythonConnection.send(JSON.stringify({
+            type: 'structure_command', // Match what run.py expects
+            command: data.command,
+            strategy_id: data.strategy_id
+          }));
+        } else {
+          console.warn("⚠️ Cannot forward strategy_command: Python backend not connected");
+        }
+
+      } else if (data.type === 'trade_command') {
+        // Forward trade command to Python backend
+        console.log(`➡️ Forwarding trade command to Python: ${data.command}`);
+
+        if (pythonConnection && pythonConnection.readyState === WebSocket.OPEN) {
+          pythonConnection.send(JSON.stringify({
+            type: 'trade_command', // Forward as trade_command
+            command: data.command,
+            data: data.data // Pass the order data
+          }));
+        } else {
+          console.warn("⚠️ Cannot forward trade_command: Python backend not connected");
+        }
+
+      } else if (data.type === 'data_command') {
+        // Forward data command (e.g. GET_TRADE_HISTORY) to Python backend
+        console.log(`➡️ Forwarding data command to Python: ${data.command}`);
+
+        if (pythonConnection && pythonConnection.readyState === WebSocket.OPEN) {
+          pythonConnection.send(JSON.stringify({
+            type: 'data_command',
+            command: data.command
+          }));
+        } else {
+          console.warn("⚠️ Cannot forward data_command: Python backend not connected");
+        }
+
       } else {
         // Frontend message - add to client manager if not already added
         if (!isPythonBackend && !loggedConnection) {
