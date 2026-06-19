@@ -36,7 +36,8 @@ Your architecture is fundamentally sound with excellent core technology choices.
 | **API Gateway** | Express + Node.js | B+ | ✅ Good | Keep (consider NestJS later) |
 | **Real-time Comm** | WebSocket (ws) | A | ✅ Excellent | Keep as-is |
 | **AI/ML Core** | Python + NumPy/PyTorch | A+ | ✅ Excellent | Keep as-is |
-| **Broker API** | Interactive Brokers (ibapi) | A | ✅ Only option | Keep as-is |
+| **Broker API** | Interactive Brokers (`ib_async`) | A | ✅ Shifted from raw `ibapi` | Keep as-is |
+| **GenAI LLM** | `llama-3.1-8b` | A | ✅ Shifted from `llama-3.3-70b` | Keep as-is (fast inference) |
 | **Message Queue** | None | F | 🔴 Missing | **Add Redis/Kafka** |
 | **Database** | None | F | 🔴 Missing | **Add PostgreSQL + TimescaleDB** |
 | **Type Sharing** | None | D | 🟡 Weak | Add Pydantic → TS codegen |

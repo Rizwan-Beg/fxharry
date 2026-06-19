@@ -212,7 +212,8 @@ FXHarry is a standalone, full-stack trading system that integrates with external
 - Network connectivity is stable
 
 **Dependencies**:
-- Interactive Brokers API (ibapi)
+- Interactive Brokers API (`ib_async` with bracket order support)
+- GenAI Integration (`llama-3.1-8b` for macroeconomic news sentiment vetting)
 - Node.js runtime environment
 - Python runtime environment
 - Modern web browser with WebSocket support
@@ -746,7 +747,7 @@ The system SHALL manage trade execution and order lifecycle.
 #### 4.3.1 Interactive Brokers API
 
 **Interface Type**: TCP Socket  
-**Protocol**: IB API (ibapi)  
+**Protocol**: IB API (`ib_async` CFD mappings)  
 **Port**: 7497 (paper trading), 7496 (live trading)
 
 **Requirements**:
@@ -922,7 +923,8 @@ The system SHALL manage trade execution and order lifecycle.
 | AI/ML Runtime | Python | 3.10+ | Strategy engine |
 | Numerical Computing | NumPy, Pandas | Latest | Data processing |
 | ML Framework | PyTorch | Latest | Deep learning |
-| Broker API | ibapi | Latest | IBKR integration |
+| Broker API | `ib_async` | Latest | IBKR integration |
+| LLM | `llama-3.1-8b` | Latest | AI Gatekeeper |
 | Database (Planned) | PostgreSQL | 14+ | Data persistence |
 | Time-Series DB | TimescaleDB | Latest | Time-series optimization |
 | Message Queue (Planned) | Redis / Kafka | Latest | Message reliability |

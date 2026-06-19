@@ -60,7 +60,8 @@ graph TB
 
 #### 3. **IBKR Streaming Service** (Python)
 - **Location**: `ibkr_streaming/`
-- **Technology**: Python with asyncio, Interactive Brokers API (ibapi)
+- **Technology**: Python with asyncio, Interactive Brokers API (ib_async)
+- **Role**: Maintains the WebSocket connection to IBKR, translates raw signals into strict 5-decimal bracket orders (Stop Loss/Take Profit), and routes them to IBKR via CFD contracts to avoid forex lot size limitations.
 - **Purpose**: Real-time market data collection and candle generation
 - **Key Components**:
   - `run.py` - Main orchestration loop
@@ -149,6 +150,16 @@ graph TB
 - **Location**: `infra/`
 - **Purpose**: Docker configurations, deployment scripts
 - **Deployment**: Docker Compose orchestration (referenced in root `docker-compose.yml`)
+
+---
+
+## 🔄 Live Execution Data Flow (v1.0)
+1. **AI Evaluates Market Data** (Machine Learning models + Rule-based logic).
+2. **LLM Gatekeeper (llama-3.1-8b)** intercepts the raw signal, checking macroeconomic news sentiment to potentially veto the trade.
+3. **Trade Scorer** validates the signal mathematically against current M15 market regimes (ATR/ADX).
+4. If approved, **Signal generated** and sent to the Execution Engine.
+5. **Execution Engine** maps the symbol to a `CFD` contract, applies 5-decimal rounding limits, attaches stop-loss/take-profit brackets, and routes to IBKR via `ib_async`.
+6. **Position is tracked** in memory and synced via periodic background updates from IBKR.
 
 ---
 
@@ -325,7 +336,8 @@ Reviews strategy recommendations (confidence %, reason)
 | **ML/DL** | PyTorch, scikit-learn | Model training & inference |
 | **RL** | Stable-Baselines3 (planned) | Reinforcement learning agents |
 | **GenAI** | LangChain, FinBERT (planned) | LLM reasoning, sentiment |
-| **Broker** | Interactive Brokers API (ibapi) | Market data & execution |
+| **Broker** | Interactive Brokers API (`ib_async`) | Market data & CFD bracket execution |
+| **GenAI** | `llama-3.1-8b` (via Groq) | Real-time news sentiment and trade veto logic |
 | **Real-time** | WebSocket (ws library) | Live data streaming |
 | **Protocols** | gRPC, Protobuf | Inter-service communication |
 | **Deployment** | Docker, Docker Compose | Containerization |

@@ -113,7 +113,8 @@ graph TB
 | **AI Engine** | Python 3.10+ | Industry standard for ML/quant |
 | **Numerical** | NumPy, Pandas | Fast numerical computation |
 | **ML/DL** | PyTorch | Flexible deep learning framework |
-| **Broker** | Interactive Brokers (ibapi) | Professional-grade broker API |
+| **Broker** | Interactive Brokers (`ib_async`) | Professional-grade async broker API with bracket order support |
+| **GenAI** | `llama-3.1-8b` | Real-time news sentiment and trade veto logic |
 | **Database** | PostgreSQL + TimescaleDB (planned) | Reliable, time-series optimized |
 | **Message Queue** | Redis/Kafka (planned) | Message reliability, pub/sub |
 | **Monitoring** | Prometheus + Grafana (planned) | Metrics collection and visualization |
@@ -862,7 +863,7 @@ Client ← Receive updates
 
 **Connection**: TCP Socket to localhost:7497 (paper) or localhost:7496 (live)
 
-**Library**: ibapi (Interactive Brokers Python API)
+**Library**: `ib_async` (Interactive Brokers Python Async API)
 
 **Key Methods**:
 - `reqMktData()`: Subscribe to market data
