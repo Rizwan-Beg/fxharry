@@ -39,6 +39,14 @@ Broker APIs / Trading Platforms / Data Sources (100+ APIs)
         ↕
 Optional C++ Engine (cpp_engine/) for Low-Latency Execution
 
+🌟 Current Live Pipeline (v1.0)
+The system is currently running a fully integrated live-execution pipeline:
+- **Strategy Engine**: Running the `Apex` Multi-Timeframe (MTF) strategy. It aligns M15 directional bias with M5 momentum crossovers during active London/NY sessions.
+- **LLM Gatekeeper**: Signals are routed to an AI Agent powered by `llama-3.1-8b` (via Groq). The LLM actively pulls live News sentiment and macroeconomic data to vet technical signals before execution.
+- **Trade Scorer**: Mathematical validation of signals against market regime (ADX/ATR) to ensure execution only in favorable conditions.
+- **Execution Engine**: Direct integration with Interactive Brokers (IBKR TWS) via `ib_async`. Features automated bracket order generation (Take Profit & Stop Loss), CFD routing, strict 5-decimal tick compliance, and in-memory position tracking.
+- **Frontend Dashboard**: A comprehensive React UI featuring real-time AI reasoning logs, an interactive Trade History modal, and live account equity tracking.
+
 🔥 Key Features
 🧬 Multi-Agent AI Strategy System
 Rule-based strategies
