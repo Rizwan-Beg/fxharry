@@ -5,7 +5,7 @@ This adapter wraps ib_async to implement the BaseBroker interface.
 
 import asyncio
 from typing import Dict, List, Optional, Any
-from ib_async import IB, CFD, Forex, MarketOrder, util
+from ib_async import IB, CFD, Forex, MarketOrder, LimitOrder, StopOrder, util
 from ai_core.core.logger import get_logger
 from .base_broker import BaseBroker
 
@@ -139,17 +139,45 @@ class IBKRAsyncService(BaseBroker):
             contract = self._create_contract(symbol)
             logger.info(f"Created contract: {contract}")
             
-            # Create order
+            # Create parent order
             if order_type == "MKT":
-                order = MarketOrder(action=action.upper(), totalQuantity=quantity)
+                parent = MarketOrder(action=action.upper(), totalQuantity=quantity)
+            elif order_type == "LMT" and limit_price:
+                parent = LimitOrder(action=action.upper(), totalQuantity=quantity, lmtPrice=limit_price)
             else:
                 logger.error(f"Order type {order_type} not yet supported")
                 return None
             
-            logger.info(f"Placing {action} order for {quantity} {symbol}")
+            # Check if this is a bracket order
+            has_bracket = stop_loss is not None or take_profit is not None
+            if has_bracket:
+                parent.transmit = False
+                
+            logger.info(f"Placing {action} order for {quantity} {symbol} (Bracket: {has_bracket})")
             
-            # Place order
-            trade = self.ib.placeOrder(contract, order)
+            # Place parent order first to get its assigned orderId
+            trade = self.ib.placeOrder(contract, parent)
+            parent_id = trade.order.orderId
+            
+            # Create and place child orders if needed
+            if has_bracket:
+                child_action = "SELL" if action.upper() == "BUY" else "BUY"
+                
+                if take_profit is not None:
+                    tp_order = LimitOrder(action=child_action, totalQuantity=quantity, lmtPrice=take_profit)
+                    tp_order.parentId = parent_id
+                    # Transmit if there's no stop loss to follow
+                    tp_order.transmit = stop_loss is None
+                    self.ib.placeOrder(contract, tp_order)
+                    logger.info(f"Attached Take Profit at {take_profit}")
+                    
+                if stop_loss is not None:
+                    sl_order = StopOrder(action=child_action, totalQuantity=quantity, stopPrice=stop_loss)
+                    sl_order.parentId = parent_id
+                    # The final child order must always have transmit = True
+                    sl_order.transmit = True
+                    self.ib.placeOrder(contract, sl_order)
+                    logger.info(f"Attached Stop Loss at {stop_loss}")
             
             # Wait a bit for order to be processed
             await asyncio.sleep(2)
@@ -221,31 +249,13 @@ class IBKRAsyncService(BaseBroker):
             
             result = {}
             for s in summaries:
-                # s has tag, value, currency, account
                 if hasattr(s, 'tag') and hasattr(s, 'value'):
-                    # Prefer values with matching currency if possible
-                    # IBKR often returns values in 'BASE' currency (the account's currency)
-                    # and sometimes in specific currencies.
-                    # We want the value where currency matches the account's base currency.
-                    
-                    # If we already have this tag...
-                    if s.tag in result:
-                        # If the new one is USD or has no currency, maybe keep it?
-                        # Actually, typically we want the one with currency='BASE' (if IB returns that)
-                        # or the one matching the user's account currency.
-                        # For now, let's log what we see for NetLiquidation to debug
-                        if s.tag == "NetLiquidation":
-                            logger.info(f"Account Value: {s.tag}={s.value} ({s.currency})")
-                            
-                        # Simple logic: If we have a value and the new one is NOT the base currency, skip
-                        # But we don't know base currency easily without checking. 
-                        # Let's assume the LAST one is usually the base or we prioritize specific currencies.
-                        # Better approach: Store all and let frontend decide? No, frontend expects simple dict.
-                        
-                        # PRIORITY: specific currency > empty currency
-                        if s.currency:
-                             result[s.tag] = s.value # Overwrite with specific currency version
-                    else:
+                    # To prevent UI oscillation between different currencies (USD vs BASE vs EUR),
+                    # we prefer the 'BASE' currency. If not BASE, we only set it if not already set,
+                    # or if the current one being evaluated is BASE, we overwrite it.
+                    if s.tag not in result:
+                        result[s.tag] = s.value
+                    elif getattr(s, 'currency', '') == 'BASE':
                         result[s.tag] = s.value
             
             return result

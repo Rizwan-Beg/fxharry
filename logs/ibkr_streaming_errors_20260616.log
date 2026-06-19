@@ -1,0 +1,24 @@
+2026-06-16 19:01:43.038 | ERROR    | __main__ | main:582 | Error processing tick for EURUSD: cannot access local variable 'all_candles' where it is not associated with a value
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 483, in main
+    "candles": dict(all_candles)
+                    ^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'all_candles' where it is not associated with a value
+2026-06-16 19:14:31.335 | ERROR    | __main__ | main:614 | Error processing tick for EURUSD: cannot access local variable 'all_candles' where it is not associated with a value
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 514, in main
+    "candles": dict(all_candles)
+                    ^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'all_candles' where it is not associated with a value
+2026-06-16 19:24:56.209 | ERROR    | __main__ | main:614 | Error processing tick for EURUSD: cannot access local variable 'all_candles' where it is not associated with a value
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 514, in main
+    "candles": dict(all_candles)
+                    ^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'all_candles' where it is not associated with a value
+2026-06-16 19:31:41.307 | ERROR    | __main__ | main:614 | Error processing tick for EURUSD: cannot access local variable 'all_candles' where it is not associated with a value
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 514, in main
+    "candles": dict(all_candles)
+                    ^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'all_candles' where it is not associated with a value

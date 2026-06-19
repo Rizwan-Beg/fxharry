@@ -5,7 +5,7 @@ Institutional-style execution model:
 - M15 timeframe: Defines directional bias using SMA(50)
 - M5 timeframe: Executes trades using SMA(10), SMA(30), RSI(14)
 - Session filter: Only trade during London or New York sessions
-- Risk management: Fixed 2% SL, 6% TP (1:3 R:R)
+- Risk management: Fixed 2% SL, 6% TP (1:3 R:R) hello 
 """
 
 import time
@@ -285,6 +285,32 @@ class ApexStrategy:
             return exit_signal
         
         return None
+        
+    def get_diagnostics(self) -> dict:
+        """
+        Get live diagnostic features for frontend visualization.
+        """
+        features = {
+            'sma_10': None,
+            'sma_30': None,
+            'rsi_14': None,
+            'm15_bias': self.mtf_engine.m15_bias if self.mtf_engine else 0,
+            'position': self.current_position,
+            'm5_closes': list(self.mtf_engine.m5_close) if self.mtf_engine else []
+        }
+        
+        # Calculate current indicators based on latest data
+        if self.mtf_engine and len(self.mtf_engine.m5_close) > 0:
+            import numpy as np
+            closes = list(self.mtf_engine.m5_close)
+            if len(closes) >= 10:
+                features['sma_10'] = float(np.mean(closes[-10:]))
+            if len(closes) >= 30:
+                features['sma_30'] = float(np.mean(closes[-30:]))
+            if len(closes) >= 15:
+                features['rsi_14'] = self.mtf_engine._compute_rsi(np.array(closes), 14)
+                
+        return features
     
     def generate_signal(self, symbol: str, price: float, features: dict) -> Optional[Dict]:
         """

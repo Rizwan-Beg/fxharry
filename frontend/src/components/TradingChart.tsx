@@ -29,10 +29,21 @@ export function TradingChart({ symbol, marketData, signals }: TradingChartProps)
     const price = Number(marketData.mid || marketData.bid || marketData.ask);
 
     if (price > 0) {
-      priceCache[symbol].push({
-        time: timestamp,
-        value: price,
-      });
+      const lastIdx = priceCache[symbol].length - 1;
+      if (lastIdx >= 0 && priceCache[symbol][lastIdx].time === timestamp) {
+        // Update the existing point to avoid duplicates at same timestamp
+        priceCache[symbol][lastIdx].value = price;
+      } else {
+        // Only push if time is strictly greater (preventing out-of-order)
+        if (lastIdx < 0 || timestamp > priceCache[symbol][lastIdx].time) {
+          priceCache[symbol].push({
+            time: timestamp,
+            value: price,
+          });
+        } else {
+          console.warn(`[TradingChart] Ignored out-of-order tick for ${symbol}: timestamp=${timestamp}, last=${priceCache[symbol][lastIdx].time}`);
+        }
+      }
     }
 
     // Keep memory small

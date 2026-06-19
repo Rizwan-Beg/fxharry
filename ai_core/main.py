@@ -15,6 +15,7 @@ from ai_core.strategy_engine.strategy_manager import StrategyManager
 from ai_core.strategy_engine.broker.ibkr_service import IBKRService
 from ai_core.strategy_engine.market_data.market_data_service import MarketDataService
 from ai_core.risk_manager.risk_manager import RiskManager
+from ai_core.execution.execution_engine import ExecutionEngine
 from ai_core.backtesting.engine import BacktestingEngine
 from ai_core.api.routes import strategies, trades, backtesting, account
 from ai_core.api.websocket.connection_manager import ConnectionManager
@@ -38,6 +39,7 @@ strategy_manager = StrategyManager()
 ibkr_service = IBKRService()
 market_data_service = MarketDataService()
 risk_manager = RiskManager()
+execution_engine = ExecutionEngine(broker_service=ibkr_service, risk_manager=risk_manager)
 backtesting_engine = BacktestingEngine()
 connection_manager = ConnectionManager()
 
@@ -100,20 +102,33 @@ async def stream_market_data():
             # Get live forex data
             forex_data = await market_data_service.get_live_forex_data(['EURUSD', 'GBPUSD', 'XAUUSD'])
             
-            # Process through active strategies
-            active_strategies = strategy_manager.get_active_strategies()
             signals = []
             
-            for strategy in active_strategies:
-                signal = await strategy_manager.process_strategy(strategy.id, forex_data)
-                if signal:
-                    signals.append(signal)
+            # Process ticks through strategy manager
+            for symbol, data in forex_data.items():
+                # Extract normalized symbol and price
+                price = data.get('last')
+                if price:
+                    # Strategy Manager expects 'EUR/USD' format or handles 'EURUSD', our mock returns 'EURUSD'
+                    tick_signals = strategy_manager.process_tick(symbol, price)
+                    if tick_signals:
+                        signals.extend(tick_signals)
+            
+            # Execute any approved signals!
+            if signals:
+                logger.info(f"Passing {len(signals)} approved signals to execution engine...")
+                await execution_engine.process_signals(signals)
+            
+            # Extract diagnostics for frontend (using EURUSD as primary)
+            diagnostics = strategy_manager.get_diagnostics('EURUSD')
             
             # Broadcast data to connected clients
             market_update = {
                 'type': 'market_data',
                 'data': forex_data,
                 'signals': signals,
+                'diagnostics': diagnostics,
+                'rejectedSignals': strategy_manager.recent_rejected_signals,
                 'timestamp': datetime.now().isoformat()
             }
             

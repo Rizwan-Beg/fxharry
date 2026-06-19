@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, AlertTriangle, Settings, TrendingDown, DollarSign } from 'lucide-react';
 
 interface RiskManagementProps {
   riskAssessment: any;
+  riskLimits?: any;
+  onSaveRiskLimits?: (limits: any) => void;
   positions: any[];
 }
 
-export function RiskManagement({ riskAssessment, positions }: RiskManagementProps) {
+export function RiskManagement({ riskAssessment, riskLimits: backendRiskLimits, onSaveRiskLimits, positions }: RiskManagementProps) {
   const [riskLimits, setRiskLimits] = useState({
     maxDailyLoss: 2.0,
     maxPositionSize: 5.0,
     maxCorrelationExposure: 15.0,
     maxDrawdownLimit: 20.0
   });
+
+  useEffect(() => {
+    if (backendRiskLimits) {
+      setRiskLimits({
+        maxDailyLoss: backendRiskLimits.max_daily_loss_percent ?? 2.0,
+        maxPositionSize: backendRiskLimits.max_position_size_percent ?? 50.0,
+        maxCorrelationExposure: backendRiskLimits.max_correlation_exposure_percent ?? 15.0,
+        maxDrawdownLimit: backendRiskLimits.max_drawdown_limit_percent ?? 20.0
+      });
+    }
+  }, [backendRiskLimits]);
 
   const [showSettings, setShowSettings] = useState(false);
 
@@ -179,10 +192,26 @@ export function RiskManagement({ riskAssessment, positions }: RiskManagementProp
           </div>
 
           <div className="flex space-x-3 mt-6">
-            <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+            <button 
+              onClick={() => {
+                if (onSaveRiskLimits) {
+                  onSaveRiskLimits({
+                    max_daily_loss_percent: riskLimits.maxDailyLoss,
+                    max_position_size_percent: riskLimits.maxPositionSize,
+                    max_correlation_exposure_percent: riskLimits.maxCorrelationExposure,
+                    max_drawdown_limit_percent: riskLimits.maxDrawdownLimit
+                  });
+                }
+                setShowSettings(false);
+              }}
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
               Save Settings
             </button>
-            <button className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+            <button 
+              onClick={() => {
+                setRiskLimits({ maxDailyLoss: 2.0, maxPositionSize: 50.0, maxCorrelationExposure: 15.0, maxDrawdownLimit: 20.0 });
+              }}
+              className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
               Reset to Defaults
             </button>
           </div>
@@ -196,16 +225,21 @@ export function RiskManagement({ riskAssessment, positions }: RiskManagementProp
         {positions && positions.length > 0 ? (
           <div className="space-y-3">
             {positions.map((position, index) => {
-              const riskScore = Math.random() * 0.8; // Mock risk score
+              // Calculate a simple risk score based on unrealized PNL
+              const pnl = position.unrealized_pnl || 0;
+              const quantity = position.quantity || 0;
+              const marketValue = position.market_value || 0;
+              const riskScore = pnl < 0 ? 0.6 : 0.2;
+              
               return (
                 <div key={index} className="p-4 bg-gray-700 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <span className="font-medium">{position.symbol}</span>
+                      <span className="font-medium">{position.symbol || 'UNKNOWN'}</span>
                       <span className={`px-2 py-1 rounded text-xs ${
-                        position.quantity > 0 ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'
+                        quantity > 0 ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'
                       }`}>
-                        {position.quantity > 0 ? 'LONG' : 'SHORT'}
+                        {quantity > 0 ? 'LONG' : 'SHORT'}
                       </span>
                     </div>
                     <div className={`text-sm font-medium ${getRiskLevelColor(riskScore)}`}>
@@ -216,18 +250,18 @@ export function RiskManagement({ riskAssessment, positions }: RiskManagementProp
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
                       <span className="text-gray-400">Size:</span>
-                      <div className="font-medium">{Math.abs(position.quantity).toLocaleString()}</div>
+                      <div className="font-medium">{Math.abs(quantity).toLocaleString()}</div>
                     </div>
                     <div>
                       <span className="text-gray-400">Value:</span>
-                      <div className="font-medium">${Math.abs(position.market_value).toLocaleString()}</div>
+                      <div className="font-medium">${Math.abs(marketValue).toLocaleString()}</div>
                     </div>
                     <div>
                       <span className="text-gray-400">P&L:</span>
                       <div className={`font-medium ${
-                        position.unrealized_pnl >= 0 ? 'text-green-400' : 'text-red-400'
+                        pnl >= 0 ? 'text-green-400' : 'text-red-400'
                       }`}>
-                        ${position.unrealized_pnl.toFixed(2)}
+                        ${pnl.toFixed(2)}
                       </div>
                     </div>
                   </div>

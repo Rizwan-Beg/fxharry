@@ -1,15 +1,22 @@
-# ibkr_streaming/ws_push.py
-
 import asyncio
 import json
 import math
 import websockets
 import os
-from urllib.parse import urlparse, parse_qs
 from .config import NODE_GATEWAY_WS_URL
 from ai_core.core.logger import get_logger
 
 logger = get_logger(__name__)
+
+# websockets v15 uses .state (int): 1=OPEN, 2=CLOSING, 3=CLOSED
+_WS_STATE_OPEN = 1
+
+def _is_open(conn) -> bool:
+    """Return True if a websockets v15 connection is in the OPEN state."""
+    try:
+        return conn is not None and conn.state == _WS_STATE_OPEN
+    except Exception:
+        return False
 
 # ------------------------------------------------------------
 # JSON Sanitization Helper
@@ -31,7 +38,8 @@ def sanitize_for_json(obj):
 # ------------------------------------------------------------
 _command_handler = None
 
-# Connection state
+# Connection state — _ws_connection is set as soon as connect() succeeds,
+# BEFORE entering the read loop, so push() can use it immediately.
 _ws_connection = None
 _connection_attempts = 0
 _connection_task = None
@@ -56,49 +64,57 @@ async def _maintain_connection():
 
     while True:
         try:
-            # If connection exists but is CLOSED → reset it
-            if _ws_connection is not None:
-                if _ws_connection.closed:
-                    _ws_connection = None
+            # Reset stale connection
+            if _ws_connection is not None and not _is_open(_ws_connection):
+                _ws_connection = None
 
-            # If we have no connection → create one
             if _ws_connection is None:
                 _connection_attempts += 1
-
                 try:
                     conn = await websockets.connect(
                         NODE_GATEWAY_WS_URL,
                         ping_interval=20,
-                        ping_timeout=10
+                        ping_timeout=10,
+                        open_timeout=5,
                     )
+                    # *** KEY FIX: set global BEFORE entering read loop ***
                     _ws_connection = conn
                     _connection_attempts = 0
                     logger.info(f"✅ WebSocket connected to Node Gateway at {NODE_GATEWAY_WS_URL}")
-                    
-                    # Connection successful - start reading loop
+
+                    # Read loop — runs while connection is alive
                     try:
                         async for message in conn:
-                            # Handle incoming message
                             if _command_handler:
                                 try:
                                     data = json.loads(message)
+                                    # Skip welcome message silently
+                                    if data.get("type") == "welcome":
+                                        continue
                                     await _command_handler(data)
                                 except json.JSONDecodeError:
                                     logger.warning(f"Received invalid JSON: {message}")
                                 except Exception as e:
                                     logger.error(f"Error handling message: {e}")
-                    except websockets.exceptions.ConnectionClosed:
-                        logger.warning("WebSocket connection closed")
-                    
-                    # If loop exits, connection is closed
-                    _ws_connection = None
+                    except websockets.exceptions.ConnectionClosed as e:
+                        logger.warning(f"WebSocket connection closed: {e}")
+                    except Exception as e:
+                        logger.error(f"Read loop error: {e}")
+                    finally:
+                        # Connection died — clear it so we reconnect next iteration
+                        _ws_connection = None
+                        logger.info("WebSocket connection lost, will reconnect...")
 
                 except Exception as e:
                     if _connection_attempts == 1 or _connection_attempts % 10 == 0:
-                        logger.warning(f"WebSocket connect attempt #{_connection_attempts} failed: {e}")
+                        logger.warning(
+                            f"WebSocket connect attempt #{_connection_attempts} failed: {e}"
+                        )
+                    _ws_connection = None
                     await asyncio.sleep(2)
                     continue
 
+            # Already connected — just sleep and check again
             await asyncio.sleep(1)
 
         except Exception as e:
@@ -107,41 +123,52 @@ async def _maintain_connection():
             await asyncio.sleep(2)
 
 
+# ------------------------------------------------------------
+# START CONNECTION TASK (call once from run.py at startup)
+# ------------------------------------------------------------
+async def start_connection():
+    """Explicitly start the WebSocket connection maintenance task.
+    Call this once at startup BEFORE the first push()."""
+    global _connection_task, _connection_task_started
+    async with _connection_lock:
+        if not _connection_task_started:
+            logger.info("Starting WebSocket connection maintenance task...")
+            _connection_task = asyncio.create_task(_maintain_connection())
+            _connection_task_started = True
+            # Wait up to 3 seconds for initial connection
+            for _ in range(15):
+                await asyncio.sleep(0.2)
+                if _ws_connection is not None and _is_open(_ws_connection):
+                    logger.info("✅ WebSocket ready for push")
+                    return
+            logger.warning("⚠️ WebSocket not yet connected after 3s, will retry in background")
+
 
 # ------------------------------------------------------------
 # RETURN ACTIVE CONNECTION (or None)
 # ------------------------------------------------------------
 async def _get_connection():
-    global _ws_connection, _connection_task_started, _connection_task
+    global _connection_task_started, _connection_task
 
-    # Start background task once
+    # Start background task lazily if not started
     if not _connection_task_started:
         async with _connection_lock:
             if not _connection_task_started:
-                logger.info("Starting WebSocket connection maintenance task...")
+                logger.info("Starting WebSocket connection maintenance task (lazy)...")
                 _connection_task = asyncio.create_task(_maintain_connection())
                 _connection_task_started = True
-                await asyncio.sleep(0.5)
 
-    # Wait for connection to initialize
-    waited = 0
-    while _ws_connection is None and waited < 10:
+    # Wait up to 3 seconds for connection
+    for _ in range(15):
+        if _ws_connection is not None:
+            try:
+                if _is_open(_ws_connection):
+                    return _ws_connection
+            except Exception:
+                pass
         await asyncio.sleep(0.2)
-        waited += 0.2
 
-    if _ws_connection is None:
-        logger.debug("WS connection unavailable after wait")
-        return None
-
-    # Check connection status
-    try:
-        if not _ws_connection.closed:
-            return _ws_connection
-        logger.debug("WS connection is closed")
-    except Exception as e:
-        logger.debug(f"WS check failed: {e}")
-
-    _ws_connection = None
+    logger.debug("WS connection unavailable after wait")
     return None
 
 
@@ -157,23 +184,25 @@ async def push(data):
             logger.debug("Skipping push: No active WS connection.")
             return
 
-        # Send JSON - sanitize to avoid NaN/Infinity errors
         try:
             sanitized_data = sanitize_for_json(data)
             await conn.send(json.dumps(sanitized_data, allow_nan=False))
-            # Safe symbol extraction for logging
+
+            # Safe symbol extraction for debug logging
             symbol = None
             if isinstance(data, dict):
-                symbol = data.get("symbol") or data.get("data", {}).get("symbol") if isinstance(data.get("data"), dict) else None
-            logger.debug(f"[PUSH] Sent data for {symbol or 'unknown'}")
+                symbol = data.get("symbol")
+                if not symbol and isinstance(data.get("data"), dict):
+                    symbol = data["data"].get("symbol")
+            logger.debug(f"[PUSH] Sent {data.get('type', 'unknown')} for {symbol or 'unknown'}")
 
         except (websockets.exceptions.ConnectionClosed, OSError) as e:
             logger.warning(f"WS closed during send: {e}")
             try:
                 await conn.close()
-            except:
+            except Exception:
                 pass
-            _ws_connection = None  # reconnect
+            _ws_connection = None  # triggers reconnect
         except Exception as e:
             logger.error(f"Send error: {e}")
 

@@ -36,13 +36,13 @@ export default function PriceChart({ data, height = 300 }: Props) {
         timeVisible: true,
         secondsVisible: true,
       },
-     
- 
+
+
     }
-  );
-      console.log("[DEBUG] chart returned =", chart);
-      console.log("[DEBUG] chart keys =", Object.keys(chart));
-      console.log("CHART METHODS:", Object.keys(chart));
+    );
+    console.log("[DEBUG] chart returned =", chart);
+    console.log("[DEBUG] chart keys =", Object.keys(chart));
+    console.log("CHART METHODS:", Object.keys(chart));
 
 
     const lineSeries = chart.addLineSeries({
@@ -71,21 +71,48 @@ export default function PriceChart({ data, height = 300 }: Props) {
     };
   }, [height]);
 
+  const lastDataLengthRef = useRef(0);
+  const lastFirstTimeRef = useRef<any>(null);
+  const lastTimeRef = useRef<any>(null);
+
   // Update chart data
   useEffect(() => {
     if (!seriesRef.current) return;
 
     if (!data || data.length === 0) {
       seriesRef.current.setData([]);
+      lastDataLengthRef.current = 0;
+      lastFirstTimeRef.current = null;
+      lastTimeRef.current = null;
       return;
     }
 
-    if (data.length === 1) {
+    const firstTime = data[0].time;
+    const lastPoint = data[data.length - 1];
+    const isNewSeries = lastFirstTimeRef.current !== firstTime;
+    
+    // We can use update if we are either:
+    // 1. Appending a single new point (time is newer than lastTimeRef)
+    // 2. Updating the last point (time is equal to lastTimeRef)
+    const isUpdateable = !isNewSeries && 
+      (lastPoint.time === lastTimeRef.current || 
+       (lastTimeRef.current !== null && lastPoint.time > lastTimeRef.current && data.length === lastDataLengthRef.current + 1));
+
+    try {
+      if (isUpdateable) {
+        seriesRef.current.update(lastPoint);
+      } else {
+        seriesRef.current.setData(data);
+      }
+    } catch (e) {
+      console.error("[PriceChart] Error updating chart series", e);
+      // Fallback
       seriesRef.current.setData(data);
-      return;
     }
 
-    seriesRef.current.update(data[data.length - 1]);
+    lastDataLengthRef.current = data.length;
+    lastFirstTimeRef.current = firstTime;
+    lastTimeRef.current = lastPoint.time;
   }, [data]);
 
   return (

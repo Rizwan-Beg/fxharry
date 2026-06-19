@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 22, in <module>
+    from ai_core.strategy_engine.strategy_manager import StrategyManager
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ai_core/strategy_engine/__init__.py", line 4, in <module>
+    from .strategy_manager import StrategyManager
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ai_core/strategy_engine/strategy_manager.py", line 6, in <module>
+    from .strategies.ml_strategy import MLStrategy
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ai_core/strategy_engine/strategies/ml_strategy.py", line 3, in <module>
+    from ai_core.strategy_engine.base_strategy import BaseStrategy
+ModuleNotFoundError: No module named 'ai_core.strategy_engine.base_strategy'

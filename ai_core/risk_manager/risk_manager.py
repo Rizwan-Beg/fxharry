@@ -13,7 +13,9 @@ class RiskManager:
     
     def __init__(self):
         self.max_daily_loss = 0.02  # 2% max daily loss
-        self.max_position_size = 0.05  # 5% max per position
+        # Forex: notional value of 20k EUR/USD ≈ $21,600 which is 21.6% of $100k
+        # Using 50% to allow reasonable forex lot sizes without false rejections
+        self.max_position_size = 0.50  # 50% max per position (forex-friendly)
         self.max_correlation_exposure = 0.15  # 15% max correlated exposure
         self.max_drawdown_limit = 0.20  # 20% max drawdown
         
@@ -84,31 +86,49 @@ class RiskManager:
     
     def calculate_position_size(self, symbol: str, entry_price: float, 
                                stop_loss: float, risk_percent: float = 0.01,
-                               account_value: float = 100000) -> Dict[str, Any]:
-        """Calculate optimal position size based on risk management"""
+                               account_value: float = 100000, trade_score: int = None) -> Dict[str, Any]:
+        """Calculate optimal position size based on risk management and trade score"""
         if stop_loss == 0 or entry_price == stop_loss:
             return {'quantity': 0, 'error': 'Invalid stop loss'}
+            
+        # Phase 5: Dynamic Position Sizing based on Trade Score
+        actual_risk_percent = risk_percent
+        if trade_score is not None:
+            if trade_score >= 95:
+                actual_risk_percent = 0.020  # 2.0% for A+ setups
+                logger.info(f"A+ Setup (Score {trade_score}): Scaling risk to 2.0%")
+            elif trade_score >= 85:
+                actual_risk_percent = 0.010  # 1.0% for standard setups
+                logger.info(f"Standard Setup (Score {trade_score}): Scaling risk to 1.0%")
+            elif trade_score >= 80:
+                actual_risk_percent = 0.005  # 0.5% for marginal setups
+                logger.info(f"Marginal Setup (Score {trade_score}): Scaling risk down to 0.5%")
+            else:
+                actual_risk_percent = 0.0  # Rejected
+                logger.info(f"Rejected Setup (Score {trade_score}): Risk set to 0%")
+                return {'quantity': 0, 'error': 'Trade score too low'}
         
         # Risk per share/unit
         risk_per_unit = abs(entry_price - stop_loss)
         
         # Maximum risk amount
-        max_risk_amount = account_value * risk_percent
+        max_risk_amount = account_value * actual_risk_percent
         
         # Calculate position size
-        position_size = max_risk_amount / risk_per_unit
+        quantity = max_risk_amount / risk_per_unit if risk_per_unit > 0 else 0
         
-        # Apply position size limits
-        max_position_value = account_value * self.max_position_size
-        max_quantity_by_size = max_position_value / entry_price
+        # Cap position to max size
+        max_allowed_position = account_value * self.max_position_size
+        max_allowed_quantity = max_allowed_position / entry_price if entry_price > 0 else 0
         
-        final_quantity = min(position_size, max_quantity_by_size)
+        final_quantity = min(quantity, max_allowed_quantity)
         
         return {
             'quantity': final_quantity,
+            'risk_amount': max_risk_amount,
+            'risk_percent': actual_risk_percent,
             'position_value': final_quantity * entry_price,
-            'risk_amount': final_quantity * risk_per_unit,
-            'risk_percent': (final_quantity * risk_per_unit) / account_value,
+            'trade_score': trade_score,
             'position_size_percent': (final_quantity * entry_price) / account_value
         }
     
@@ -189,7 +209,7 @@ class RiskManager:
                 Trade.status.in_(['CLOSED', 'OPEN'])
             ).all()
             
-            daily_pnl = sum(trade.pnl for trade in today_trades)
+            daily_pnl = sum((trade.pnl or 0.0) for trade in today_trades)
             return daily_pnl
             
         finally:

@@ -4,10 +4,10 @@ import { SignalsPanel } from './SignalsPanel';
 import { PositionsPanel } from './PositionsPanel';
 import { MarketOverview } from './MarketOverview';
 import { QuickTradePanel } from './QuickTradePanel';
-import { TradeHistoryPanel } from './TradeHistoryPanel';
+import { TradeHistoryModal } from './TradeHistoryModal';
 import { RiskIndicator } from './RiskIndicator';
 import PriceChart from "./PriceChart";
-import { TrendingUp, TrendingDown, DollarSign, AlertTriangle } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, AlertTriangle, History } from 'lucide-react';
 
 interface TradingDashboardProps {
   marketData: any;
@@ -18,6 +18,8 @@ interface TradingDashboardProps {
   accountData?: any;
   tradeHistory?: any[];
   onExecuteOrder?: (order: any) => void;
+  isTradeHistoryOpen?: boolean;
+  onCloseTradeHistory?: () => void;
 }
 
 export function TradingDashboard({
@@ -28,7 +30,9 @@ export function TradingDashboard({
   selectedSymbol: propSelectedSymbol,
   accountData,
   tradeHistory,
-  onExecuteOrder
+  onExecuteOrder,
+  isTradeHistoryOpen = false,
+  onCloseTradeHistory
 }: TradingDashboardProps) {
   const [selectedSymbol, setSelectedSymbol] = useState(propSelectedSymbol || 'EURUSD');
 
@@ -50,15 +54,15 @@ export function TradingDashboard({
             <div>
               <p className="text-gray-400 text-sm">Daily P&L</p>
               <p className={`text-2xl font-bold ${(parseFloat(accountData?.summary?.RealizedPnL || '0') + parseFloat(accountData?.summary?.UnrealizedPnL || '0')) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                ${accountData?.summary?.RealizedPnL || accountData?.summary?.UnrealizedPnL ? 
+                ${accountData?.summary?.RealizedPnL || accountData?.summary?.UnrealizedPnL ?
                   (parseFloat(accountData.summary.RealizedPnL || '0') + parseFloat(accountData.summary.UnrealizedPnL || '0')).toFixed(2) : '0.00'}
               </p>
               <div className="text-xs text-gray-500 mt-1">
                 Realized: ${accountData?.summary?.RealizedPnL || '0.00'} | Unrealized: ${accountData?.summary?.UnrealizedPnL || '0.00'}
               </div>
             </div>
-            {(parseFloat(accountData?.summary?.RealizedPnL || '0') + parseFloat(accountData?.summary?.UnrealizedPnL || '0')) >= 0 ? 
-              <TrendingUp className="h-8 w-8 text-green-400" /> : 
+            {(parseFloat(accountData?.summary?.RealizedPnL || '0') + parseFloat(accountData?.summary?.UnrealizedPnL || '0')) >= 0 ?
+              <TrendingUp className="h-8 w-8 text-green-400" /> :
               <TrendingDown className="h-8 w-8 text-red-400" />}
           </div>
         </div>
@@ -88,10 +92,13 @@ export function TradingDashboard({
         </div>
 
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <RiskIndicator
-            riskLevel={riskAssessment?.risk_level || 0}
-            warnings={riskAssessment?.warnings || []}
-          />
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-400 text-sm">Risk Level</p>
+              <p className="text-2xl font-bold text-yellow-400">{riskAssessment?.risk_level || 'LOW'}</p>
+            </div>
+            <DollarSign className="h-8 w-8 text-yellow-400" />
+          </div>
         </div>
       </div>
 
@@ -106,8 +113,8 @@ export function TradingDashboard({
                 key={symbol}
                 onClick={() => setSelectedSymbol(symbol)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedSymbol === symbol
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
                   }`}
               >
                 {symbol}
@@ -141,11 +148,15 @@ export function TradingDashboard({
 
           {/* Positions */}
           <PositionsPanel positions={accountData?.positions || positions} />
-          
-          {/* Trade History - Moved to sidebar */}
-          <TradeHistoryPanel trades={tradeHistory || []} />
         </div>
       </div>
+
+      {/* Trade History Modal */}
+      <TradeHistoryModal
+        isOpen={isTradeHistoryOpen}
+        onClose={onCloseTradeHistory || (() => { })}
+        trades={tradeHistory || []}
+      />
     </div>
   );
 }

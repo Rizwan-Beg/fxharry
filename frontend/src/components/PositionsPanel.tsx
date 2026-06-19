@@ -1,13 +1,59 @@
-import React from 'react';
-import { PieChart, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { PieChart, TrendingUp, TrendingDown, DollarSign, X } from 'lucide-react';
+import { createWS } from '../services/ws';
+import { useEffect, useRef } from 'react';
 
 interface PositionsPanelProps {
   positions: any[];
 }
 
 export function PositionsPanel({ positions = [] }: PositionsPanelProps) {
+  const wsRef = useRef<any>(null);
+
+  useEffect(() => {
+    const ws = createWS();
+    wsRef.current = ws;
+    return () => {
+      ws.ws.close();
+      wsRef.current = null;
+    };
+  }, []);
+
   const totalPnL = positions.reduce((sum, pos) => sum + (pos.unrealized_pnl || 0), 0);
   const totalValue = positions.reduce((sum, pos) => sum + Math.abs(pos.market_value || 0), 0);
+
+  const closePosition = (position: any) => {
+    if (!wsRef.current) return;
+    const side = (position.quantity || 0) > 0 ? 'LONG' : 'SHORT';
+    const qty = Math.abs(position.quantity || 0);
+
+    if (!confirm(`Close ${side} ${qty} ${position.symbol}?`)) return;
+
+    wsRef.current.send('trade_command', {
+      command: 'CLOSE_POSITION',
+      data: {
+        symbol: position.symbol,
+        quantity: qty,
+        side: side,
+      }
+    });
+  };
+
+  const closeAllPositions = () => {
+    if (!wsRef.current) return;
+    if (!confirm(`Close all ${positions.length} positions?`)) return;
+
+    positions.forEach(pos => {
+      const side = (pos.quantity || 0) > 0 ? 'LONG' : 'SHORT';
+      wsRef.current.send('trade_command', {
+        command: 'CLOSE_POSITION',
+        data: {
+          symbol: pos.symbol,
+          quantity: Math.abs(pos.quantity || 0),
+          side: side,
+        }
+      });
+    });
+  };
 
   return (
     <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
@@ -66,19 +112,17 @@ export function PositionsPanel({ positions = [] }: PositionsPanelProps) {
                     <TrendingDown className="h-4 w-4 text-red-400" />
                   )}
                   <span className="font-medium">{position.symbol}</span>
-                  <span className={`text-sm px-2 py-1 rounded text-xs font-medium ${
-                    position.quantity > 0 
-                      ? 'bg-green-900 text-green-400' 
+                  <span className={`text-sm px-2 py-1 rounded text-xs font-medium ${position.quantity > 0
+                      ? 'bg-green-900 text-green-400'
                       : 'bg-red-900 text-red-400'
-                  }`}>
+                    }`}>
                     {position.quantity > 0 ? 'LONG' : 'SHORT'}
                   </span>
                 </div>
-                
+
                 <div className="text-right">
-                  <div className={`text-sm font-medium ${
-                    (position.unrealized_pnl || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                  }`}>
+                  <div className={`text-sm font-medium ${(position.unrealized_pnl || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+                    }`}>
                     ${(position.unrealized_pnl || 0).toFixed(2)}
                   </div>
                   <div className="text-xs text-gray-400">
@@ -110,11 +154,12 @@ export function PositionsPanel({ positions = [] }: PositionsPanelProps) {
 
               {/* Action Buttons */}
               <div className="mt-3 flex space-x-2">
-                <button className="flex-1 py-1.5 px-3 bg-red-600 hover:bg-red-700 rounded-md text-sm font-medium transition-colors">
-                  Close Position
-                </button>
-                <button className="px-3 py-1.5 bg-gray-600 hover:bg-gray-700 rounded-md text-sm font-medium transition-colors">
-                  Modify
+                <button
+                  onClick={() => closePosition(position)}
+                  className="flex-1 py-1.5 px-3 bg-red-600 hover:bg-red-700 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-1"
+                >
+                  <X className="h-3 w-3" />
+                  <span>Close Position</span>
                 </button>
               </div>
             </div>
@@ -125,7 +170,10 @@ export function PositionsPanel({ positions = [] }: PositionsPanelProps) {
       {/* Quick Actions */}
       {positions.length > 0 && (
         <div className="mt-4 pt-4 border-t border-gray-700">
-          <button className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors">
+          <button
+            onClick={closeAllPositions}
+            className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors"
+          >
             Close All Positions
           </button>
         </div>

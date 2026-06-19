@@ -1,0 +1,1234 @@
+2026-06-19 01:12:59.818 | ERROR    | ibkr_streaming.ibkr_client | connect_ibkr:30 | ❌ Failed to connect to IBKR: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-19 01:12:59.828 | CRITICAL | __main__ | main:862 | Fatal error in main execution: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-19 01:12:59.830 | CRITICAL | __main__ | <module>:878 | Unhandled exception: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 873, in <module>
+    asyncio.run(main())
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 30, in run
+    return loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 314, in __step_run_and_handle_result
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-19 01:27:51.837 | ERROR    | ibkr_streaming.ibkr_client | connect_ibkr:30 | ❌ Failed to connect to IBKR: [Errno 61] Connect call failed ('127.0.0.1', 7497)
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 217, in connectAsync
+    await asyncio.wait_for(self.conn.connectAsync(host, port), timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/connection.py", line 39, in connectAsync
+    self.transport, _ = await loop.create_connection(lambda: self, host, port)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1119, in create_connection
+    raise exceptions[0]
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1101, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1004, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/selector_events.py", line 647, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/selector_events.py", line 687, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+ConnectionRefusedError: [Errno 61] Connect call failed ('127.0.0.1', 7497)
+2026-06-19 01:27:51.843 | CRITICAL | __main__ | main:866 | Fatal error in main execution: [Errno 61] Connect call failed ('127.0.0.1', 7497)
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 217, in connectAsync
+    await asyncio.wait_for(self.conn.connectAsync(host, port), timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/connection.py", line 39, in connectAsync
+    self.transport, _ = await loop.create_connection(lambda: self, host, port)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1119, in create_connection
+    raise exceptions[0]
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1101, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1004, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/selector_events.py", line 647, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/selector_events.py", line 687, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+ConnectionRefusedError: [Errno 61] Connect call failed ('127.0.0.1', 7497)
+2026-06-19 01:27:51.844 | CRITICAL | __main__ | <module>:882 | Unhandled exception: [Errno 61] Connect call failed ('127.0.0.1', 7497)
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 877, in <module>
+    asyncio.run(main())
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 30, in run
+    return loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 314, in __step_run_and_handle_result
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 217, in connectAsync
+    await asyncio.wait_for(self.conn.connectAsync(host, port), timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/connection.py", line 39, in connectAsync
+    self.transport, _ = await loop.create_connection(lambda: self, host, port)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1119, in create_connection
+    raise exceptions[0]
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1101, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 1004, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/selector_events.py", line 647, in sock_connect
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/selector_events.py", line 687, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+ConnectionRefusedError: [Errno 61] Connect call failed ('127.0.0.1', 7497)
+2026-06-19 20:38:15.498 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:16.505 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:17.514 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:18.524 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:19.535 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:20.543 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:21.552 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:22.561 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:23.604 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:24.632 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:25.643 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:26.653 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:27.662 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:28.668 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:29.672 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:30.679 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:31.684 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:32.693 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:33.717 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:34.737 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:35.745 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:36.754 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:37.762 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:38.770 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:39.782 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:40.792 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:41.799 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:42.808 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:43.819 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:44.840 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:45.849 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:46.859 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:47.867 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:48.877 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:49.884 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:50.892 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:51.901 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:52.908 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:53.925 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:54.944 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:55.951 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:56.960 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:57.969 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:58.976 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:38:59.982 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:00.987 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:01.997 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:03.006 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:04.016 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:05.029 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:06.034 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:07.043 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:08.051 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:09.058 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:10.068 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:11.073 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:12.081 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:13.091 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:14.101 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:15.117 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:16.125 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:17.135 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:18.146 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:19.157 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:20.166 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:21.172 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:22.183 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:23.197 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:24.214 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:25.240 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:26.251 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:27.260 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:28.269 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:29.279 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:30.287 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:31.297 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:32.305 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:33.314 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:34.328 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:35.349 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:36.358 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:37.365 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:38.372 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:39.381 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:40.390 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:41.400 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:42.407 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:43.414 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:44.432 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:45.453 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:46.460 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:47.468 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:48.477 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:49.485 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:50.492 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:51.501 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:52.510 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:53.518 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:54.528 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:55.547 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:56.558 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:57.565 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:58.573 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:39:59.580 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:00.588 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:01.597 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:02.606 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:03.614 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:04.627 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:05.651 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:06.660 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:07.668 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:08.676 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:09.684 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:10.693 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:11.701 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:12.711 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:13.723 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:14.746 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:15.767 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:16.777 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:17.789 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:18.797 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:19.806 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:20.815 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:21.824 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:22.832 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:23.836 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:24.846 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:25.861 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:26.869 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:27.877 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:28.883 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:29.892 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:30.903 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:31.912 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:32.918 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:33.925 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:34.947 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:35.971 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:36.980 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:37.989 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:38.993 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:40.001 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:41.007 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:42.024 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:43.030 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:44.039 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:45.045 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?
+2026-06-19 20:40:46.061 | ERROR    | __main__ | main:892 | Error processing tick for EURUSD: name 'apex_strat' is not defined
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 707, in main
+    if apex_strat and hasattr(apex_strat, 'get_diagnostics'):
+       ^^^^^^^^^^
+NameError: name 'apex_strat' is not defined. Did you mean: 'apex_strategy'?

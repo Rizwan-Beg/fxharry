@@ -112,8 +112,26 @@ wss.on('connection', (ws: WebSocket, req) => {
         // Broadcast trade history from Python
         console.log(`📜 Received trade history from Python: ${data.data?.length} trades`);
         broadcastMarketData(data);
+      } else if (data.type === 'ai_reasoning') {
+        // Broadcast AI reasoning
+        console.log(`🧠 Received AI reasoning from Python`);
+        broadcastMarketData(data);
+      } else if (data.type === 'news_sentiment') {
+        // Broadcast News Sentiment
+        console.log(`📰 Received news sentiment from Python`);
+        broadcastMarketData(data);
+      } else if (data.type === 'backtest_result') {
+        console.log(`📈 Received backtest result from Python`);
+        broadcastMarketData(data);
       } else if (data.type === 'connection_status') {
         // Broadcast connection status from Python
+        broadcastMarketData(data);
+      } else if (data.type === 'strategy_diagnostics' || 
+                 data.type === 'rejected_signal' || 
+                 data.type === 'notification' || 
+                 data.type === 'risk_assessment' || 
+                 data.type === 'risk_limits') {
+        // Broadcast diagnostics, rejections, risk info, and notifications
         broadcastMarketData(data);
       } else if (data.type === 'strategy_command') {
         // Forward command to Python backend
@@ -155,6 +173,45 @@ wss.on('connection', (ws: WebSocket, req) => {
         } else {
           console.warn("⚠️ Cannot forward data_command: Python backend not connected");
         }
+
+      } else if (data.type === 'backtest_command') {
+        console.log(`➡️ Forwarding backtest command to Python: ${data.command}`);
+
+        if (pythonConnection && pythonConnection.readyState === WebSocket.OPEN) {
+          pythonConnection.send(JSON.stringify({
+            type: 'backtest_command',
+            command: data.command,
+            data: data.data
+          }));
+        } else {
+          console.warn("⚠️ Cannot forward backtest_command: Python backend not connected");
+        }
+
+      } else if (data.type === 'strategy_code_command') {
+        // Forward strategy code command (GET_STRATEGY_CODE, UPDATE_STRATEGY_CODE)
+        console.log(`➡️ Forwarding strategy code command to Python: ${data.command} (${data.strategy_id})`);
+
+        if (pythonConnection && pythonConnection.readyState === WebSocket.OPEN) {
+          pythonConnection.send(JSON.stringify({
+            type: 'strategy_code_command',
+            command: data.command,
+            strategy_id: data.strategy_id,
+            code: data.code  // Only present for UPDATE_STRATEGY_CODE
+          }));
+        } else {
+          console.warn("⚠️ Cannot forward strategy_code_command: Python backend not connected");
+        }
+
+      } else if (data.type === 'strategy_code') {
+        // Broadcast strategy code response from Python to frontend
+        console.log(`📄 Received strategy code from Python: ${data.data?.strategy_id}`);
+        broadcastMarketData(data);
+
+      } else if (data.type === 'strategy_code_update') {
+        // Broadcast strategy code update response from Python to frontend
+        console.log(`💾 Received strategy code update status from Python`);
+        broadcastMarketData(data);
+
 
       } else {
         // Frontend message - add to client manager if not already added

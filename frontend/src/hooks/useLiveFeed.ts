@@ -27,6 +27,15 @@ export function useLiveFeed() {
   const [accountData, setAccountData] = useState<any>(null);
   const [tradeHistory, setTradeHistory] = useState<any[]>([]);
   const [strategies, setStrategies] = useState<any[]>([]);
+  const [aiReasoning, setAiReasoning] = useState<any>(null);
+  const [aiHistory, setAiHistory] = useState<any[]>([]);
+  const [newsSentiment, setNewsSentiment] = useState<any>(null);
+  const [riskAssessment, setRiskAssessment] = useState<any>(null);
+  const [riskLimits, setRiskLimits] = useState<any>(null);
+  const [backtestResults, setBacktestResults] = useState<any>(null);
+  const [isBacktesting, setIsBacktesting] = useState<boolean>(false);
+  const [strategyDiagnostics, setStrategyDiagnostics] = useState<any>(null);
+  const [rejectedSignals, setRejectedSignals] = useState<any[]>([]);
   const [connectionStatus, setConnectionStatus] = useState({
     ibkr: false,
     websocket: false,
@@ -264,10 +273,32 @@ export function useLiveFeed() {
             setTradeHistory(msg.data);
             console.log("[useLiveFeed] Received trade history update");
           }
+        } else if (msg.type === "ai_reasoning") {
+          setAiReasoning(msg.data);
+          setAiHistory((prev) => [msg.data, ...prev].slice(0, 10));
+          console.log(
+            `[useLiveFeed] 🧠 AI reasoning: ${msg.data?.recommendation} (${Math.round((msg.data?.confidence ?? 0) * 100)}%) — ${msg.data?.latency_ms}ms`
+          );
+        } else if (msg.type === "news_sentiment") {
+          setNewsSentiment(msg.data);
+          console.log(`[useLiveFeed] 📰 News Sentiment updated: ${msg.data?.sentiment}`);
         } else if (msg.type === "strategy_status") {
           if (Array.isArray(msg.data)) {
             setStrategies(msg.data);
           }
+        } else if (msg.type === "risk_assessment") {
+          setRiskAssessment(msg.data);
+        } else if (msg.type === "risk_limits") {
+          setRiskLimits(msg.data);
+        } else if (msg.type === "backtest_result") {
+          setIsBacktesting(false);
+          setBacktestResults(msg.data);
+          console.log("[useLiveFeed] Received backtest results");
+        } else if (msg.type === "strategy_diagnostics") {
+          setStrategyDiagnostics(msg.data);
+        } else if (msg.type === "rejected_signal") {
+          setRejectedSignals((prev) => [msg.data, ...prev].slice(0, 10));
+          console.log("[useLiveFeed] Received rejected signal:", msg.data);
         } else {
           console.debug("[useLiveFeed] Received unknown message type:", msg.type);
         }
@@ -322,6 +353,9 @@ export function useLiveFeed() {
 
   const send = useCallback((type: string, payload: any) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      if (type === "backtest_command" && payload.command === "RUN_BACKTEST") {
+        setIsBacktesting(true);
+      }
       wsRef.current.send(JSON.stringify({ type, ...payload }));
     } else {
       console.warn("[useLiveFeed] WebSocket not connected, cannot send:", type);
@@ -350,6 +384,15 @@ export function useLiveFeed() {
     accountData,
     tradeHistory,
     strategies,
+    aiReasoning,
+    aiHistory,
+    newsSentiment,
+    riskAssessment,
+    riskLimits,
+    backtestResults,
+    isBacktesting,
+    strategyDiagnostics,
+    rejectedSignals,
     subscribeToSymbol,
     unsubscribeFromSymbol,
     send,

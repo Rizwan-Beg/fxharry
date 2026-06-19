@@ -121,6 +121,90 @@ class ExecutionEngine:
             logger.error(f"Error processing signal: {e}", exc_info=True)
             return None
     
+    
+    async def execute_order(
+        self,
+        symbol: str,
+        action: str,
+        quantity: int,
+        order_type: str = "MKT",
+        limit_price: Optional[float] = None,
+        strategy_id: str = "MANUAL"
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Execute a manual order (from frontend or API).
+        
+        This bypasses the signal processing pipeline and executes directly.
+        Used for manual trades from Quick Trade panel.
+        
+        Args:
+            symbol: Trading symbol (EUR/USD or EURUSD format)
+            action: BUY or SELL
+            quantity: Order quantity
+            order_type: Order type (currently only MKT supported)
+            limit_price: Limit price (for future limit order support)
+            strategy_id: Strategy identifier (default: MANUAL)
+            
+        Returns:
+            Order execution result dict or None
+        """
+        try:
+            logger.info(f"🎯 Executing manual order:")
+            logger.info(f"   Symbol: {symbol}")
+            logger.info(f"   Action: {action}")
+            logger.info(f"   Quantity: {quantity}")
+            logger.info(f"   Order Type: {order_type}")
+            logger.info(f"   Strategy: {strategy_id}")
+            
+            # Check if execution is enabled
+            if not self.enabled:
+                logger.warning("❌ Execution engine is disabled")
+                return None
+            
+            # Check circuit breaker
+            if self.circuit_breaker.is_tripped:
+                logger.warning(f"❌ Circuit breaker is tripped: {self.circuit_breaker.trip_reason}")
+                return None
+            
+            # Validate action
+            if action.upper() not in ['BUY', 'SELL']:
+                logger.error(f"❌ Invalid action: {action}")
+                return None
+            
+            # Execute through broker if available
+            if not self.broker:
+                logger.error("❌ No broker service available")
+                return None
+            
+            if self.execution_mode == ExecutionMode.PAPER_TRADING:
+                logger.info("📝 [PAPER TRADING] Simulating manual order")
+                return {
+                    "status": "SIMULATED",
+                    "message": f"Paper trading: {action} {quantity} {symbol}",
+                    "order_id": f"PAPER-MANUAL-{datetime.now().timestamp()}"
+                }
+            
+            # Execute live trade
+            logger.info(f"🚀 [LIVE TRADING] Placing order via broker...")
+            result = await self.broker.place_order(
+                symbol=symbol,
+                action=action.upper(),
+                quantity=quantity,
+                order_type=order_type,
+                limit_price=limit_price
+            )
+            
+            if result:
+                logger.info(f"✅ Manual order executed successfully: {result}")
+                return result
+            else:
+                logger.error(f"❌ Broker returned no result for manual order")
+                return None
+            
+        except Exception as e:
+            logger.error(f"❌ Error executing manual order: {e}", exc_info=True)
+            return None
+    
     async def process_signals(self, signals: List[Dict[str, Any]]):
         """Process multiple signals (convenience method)."""
         for signal in signals:
@@ -136,7 +220,7 @@ class ExecutionEngine:
                 return False
         
         # Validate action
-        valid_actions = ['LONG', 'SHORT', 'EXIT']
+        valid_actions = ['LONG', 'SHORT', 'EXIT', 'BUY', 'SELL']
         if signal['action'] not in valid_actions:
             logger.error(f"Invalid action: {signal['action']}")
             return False
@@ -144,12 +228,13 @@ class ExecutionEngine:
         return True
     
     async def _process_entry_signal(self, signal: Dict[str, Any]) -> Optional[int]:
-        """Process entry signal (LONG or SHORT)."""
+        """Process entry signal (LONG/BUY or SHORT/SELL)."""
         symbol = signal['symbol']
-        action = "BUY" if signal['action'] == 'LONG' else "SELL"
-        price = signal['price']
-        stop_loss = signal.get('stop_loss')
-        take_profit = signal.get('take_profit')
+        action_raw = signal['action']
+        action = "BUY" if action_raw in ('LONG', 'BUY') else "SELL"
+        price = round(signal['price'], 5)
+        stop_loss = round(signal.get('stop_loss'), 5) if signal.get('stop_loss') else None
+        take_profit = round(signal.get('take_profit'), 5) if signal.get('take_profit') else None
         
         # Check if we already have a position in this symbol
         if self.position_tracker.has_position(symbol):
@@ -164,20 +249,33 @@ class ExecutionEngine:
             )
             return None
         
+        # Get trade score if available
+        trade_score = signal.get('trade_score')
+        
         # Calculate position size using risk manager
         account_value = await self._get_account_value()
         position_size_info = self.risk_manager.calculate_position_size(
             symbol=symbol,
             entry_price=price,
             stop_loss=stop_loss or price * 0.98,  # Default 2% stop
-            risk_percent=0.01,  # Risk 1% per trade
-            account_value=account_value
+            risk_percent=0.01,  # Baseline risk 1% per trade
+            account_value=account_value,
+            trade_score=trade_score
         )
         
         quantity = int(position_size_info.get('quantity', 0))
+        
+        # Cap position size for forex pairs to reasonable lot sizes
+        # Forex: micro lot (1000), mini lot (10000), standard lot (100000)
+        MAX_FOREX_QUANTITY = 20000  # 2 mini lots max for safety
+        if quantity > MAX_FOREX_QUANTITY:
+            logger.info(f"Position size capped: {quantity} -> {MAX_FOREX_QUANTITY} (max forex qty)")
+            quantity = MAX_FOREX_QUANTITY
+        
         if quantity == 0:
-            logger.warning(f"Position size calculation returned 0 for {symbol}")
-            return None
+            # If calculator returns 0, use a conservative default
+            quantity = 2000  # 2 micro lots as minimum
+            logger.info(f"Position size defaulted to {quantity} (calculator returned 0)")
         
         # Assess trade risk
         risk_assessment = self.risk_manager.assess_trade_risk(
@@ -429,6 +527,72 @@ class ExecutionEngine:
                 logger.info(f"Trade {trade_id} updated with exit info")
         finally:
             db.close()
+    
+    async def sync_trades_with_broker(self):
+        """
+        Sync trade database with actual broker positions.
+        
+        Detects trades marked OPEN in DB that are no longer held
+        by the broker, and marks them as CLOSED.
+        """
+        if not self.broker:
+            return
+        
+        try:
+            # Get current broker positions
+            broker_positions = await self.broker.get_positions()
+            if broker_positions is None:
+                broker_positions = []
+            
+            # Build set of symbols currently held at broker
+            broker_symbols = set()
+            for pos in broker_positions:
+                sym = pos.get('symbol', '') if isinstance(pos, dict) else str(pos)
+                # Normalize: EURUSD -> EUR/USD
+                if len(sym) == 6 and '/' not in sym:
+                    sym = f"{sym[:3]}/{sym[3:]}"
+                broker_symbols.add(sym)
+            
+            # Check DB for OPEN trades not held by broker
+            db = SessionLocal()
+            try:
+                open_trades = db.query(Trade).filter(Trade.status == 'OPEN').all()
+                
+                for trade in open_trades:
+                    trade_sym = trade.symbol
+                    # Normalize symbol for comparison
+                    if len(trade_sym) == 6 and '/' not in trade_sym:
+                        trade_sym_norm = f"{trade_sym[:3]}/{trade_sym[3:]}"
+                    else:
+                        trade_sym_norm = trade_sym
+                    
+                    if trade_sym_norm not in broker_symbols and trade_sym not in broker_symbols:
+                        # Position no longer held at broker — mark as closed
+                        trade.status = 'CLOSED'
+                        trade.exit_time = datetime.now()
+                        # Use entry_price as exit if we don't have a better one
+                        if trade.exit_price is None:
+                            trade.exit_price = trade.entry_price  
+                        if trade.pnl is None:
+                            trade.pnl = 0.0
+                        logger.info(
+                            f"📊 Trade sync: Marked trade #{trade.id} ({trade.symbol}) as CLOSED "
+                            f"(no longer in broker positions)"
+                        )
+                        # Remove it from our in-memory tracker so we can take new trades!
+                        if self.position_tracker.has_position(trade.symbol):
+                            self.position_tracker.close_position(
+                                symbol=trade.symbol, 
+                                exit_price=trade.exit_price, 
+                                reason="Sync: Closed at Broker"
+                            )
+                
+                db.commit()
+            finally:
+                db.close()
+                
+        except Exception as e:
+            logger.error(f"Error syncing trades with broker: {e}", exc_info=True)
     
     async def _save_rejected_signal(
         self,

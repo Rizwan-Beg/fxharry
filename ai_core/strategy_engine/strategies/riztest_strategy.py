@@ -4,7 +4,7 @@ RizTest Strategy - Simple Test Strategy for End-to-End Verification
 This strategy generates a BUY signal on every M5 candle update for EUR/USD.
 Purpose: Verify the complete flow from data → strategy → execution → IBKR order placement.
 
-WARNING: This is a TEST strategy only. Do not use in production!
+WARNING: This is a TEST strategy only. Do not use in production!good weldone
 """
 
 from typing import Dict, Optional
@@ -23,10 +23,10 @@ class RizTestStrategy:
         """Initialize the RizTest strategy."""
         self.strategy_id = "riztest"
         self.signal_count = 0
-        self.max_signals = 1  # Only generate 1 signal to avoid spam
+        self.max_signals = 1000  # Increased for continuous testing
         
         print(f"🧪 RizTest Strategy Initialized")
-        print(f"   Will generate {self.max_signals} test signal(s)")
+        print(f"   Will generate up to {self.max_signals} test signal(s)")
         print(f"   Symbol: EUR/USD")
         print(f"   Action: LONG (BUY)")
         print(f"   Trigger: M1 candles (every 1 minute)")
@@ -93,8 +93,38 @@ class RizTestStrategy:
     
     def generate_signal(self, symbol: str, price: float, features: dict) -> Optional[Dict]:
         """
-        Legacy interface for compatibility.
-        
-        RizTest uses candle-based signals, so this returns None.
+        Generate a test BUY signal based on real-time price ticks.
         """
-        return None
+        # Check if we've already generated enough signals
+        if self.signal_count >= self.max_signals:
+            return None
+            
+        self.signal_count += 1
+        
+        # Calculate stop loss and take profit
+        stop_loss = price * 0.995  # 0.5% below current price
+        take_profit = price * 1.010  # 1.0% above current price
+        
+        signal = {
+            'strategy_id': self.strategy_id,
+            'symbol': symbol,
+            'action': 'LONG',  # BUY signal
+            'price': price,
+            'stop_loss': stop_loss,
+            'take_profit': take_profit,
+            'reason': f'RizTest #{self.signal_count} - Testing end-to-end execution (Price: {price})',
+            'timestamp': datetime.now().isoformat(),
+            'confidence': 0.99,  # High confidence for testing
+        }
+        
+        print(f"\n{'='*80}")
+        print(f"🧪 RIZTEST SIGNAL GENERATED!")
+        print(f"{'='*80}")
+        print(f"Signal #{self.signal_count}/{self.max_signals}")
+        print(f"Symbol: {signal['symbol']}")
+        print(f"Action: {signal['action']}")
+        print(f"Price: {signal['price']:.5f}")
+        print(f"Reason: {signal['reason']}")
+        print(f"{'='*80}\n")
+        
+        return signal

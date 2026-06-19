@@ -1,0 +1,93 @@
+2026-06-16 19:14:26 | INFO | ib_async.client | Connecting to 127.0.0.1:7497 with clientId 102... | -
+2026-06-16 19:14:26 | INFO | ib_async.client | Connected | -
+2026-06-16 19:14:26 | INFO | ib_async.client | Logged on to server version 178 | -
+2026-06-16 19:14:26 | INFO | ib_async.client | API connection ready | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | Warning 2104, reqId -1: Market data farm connection is OK:usfarm.nj | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | Warning 2104, reqId -1: Market data farm connection is OK:hfarm | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | Warning 2104, reqId -1: Market data farm connection is OK:cashfarm | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | Warning 2106, reqId -1: HMDS data farm connection is OK:apachmds | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | Warning 2106, reqId -1: HMDS data farm connection is OK:cashhmds | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | Warning 2106, reqId -1: HMDS data farm connection is OK:ushmds | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | Warning 2158, reqId -1: Sec-def data farm connection is OK:secdefhk | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | position: Position(account='DUM248652', contract=CFD(conId=143916318, symbol='EUR', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, avgCost=1.18805) | -
+2026-06-16 19:14:26 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.16008065, marketValue=-11600.81, averageCost=1.18805, unrealizedPNL=279.69, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:14:26 | INFO | ib_async.ib | Synchronization complete | -
+2026-06-16 19:14:26 | INFO | ai_core.genai.llm_agent | LLMAgent created — model: llama-3.3-70b-versatile | -
+2026-06-16 19:14:26 | INFO | ai_core.genai.news_collector | NewsCollector initialized with 2 feeds | -
+2026-06-16 19:14:26 | INFO | ai_core.genai.news_analyzer | NewsAnalyzer initialized | -
+2026-06-16 19:14:26 | INFO | ibkr_streaming.ws_push | ✅ WebSocket command handler registered | -
+2026-06-16 19:14:26 | INFO | ibkr_streaming.ws_push | Starting WebSocket connection maintenance task... | -
+2026-06-16 19:14:28 | INFO | ibkr_streaming.ws_push | ✅ WebSocket connected to Node Gateway at ws://localhost:8080/ws | -
+2026-06-16 19:14:28 | INFO | ibkr_streaming.ws_push | ✅ WebSocket ready for push | -
+2026-06-16 19:14:28 | INFO | ai_core.strategy_engine.broker.ibkr_async_service | Connecting to IBKR at 127.0.0.1:7497 with client ID 997 | -
+2026-06-16 19:14:28 | INFO | ib_async.client | Connecting to 127.0.0.1:7497 with clientId 997... | -
+2026-06-16 19:14:28 | INFO | ib_async.client | Connected | -
+2026-06-16 19:14:28 | INFO | ib_async.client | Logged on to server version 178 | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | Warning 2104, reqId -1: Market data farm connection is OK:usfarm.nj | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | Warning 2104, reqId -1: Market data farm connection is OK:hfarm | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | Warning 2104, reqId -1: Market data farm connection is OK:cashfarm | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | Warning 2106, reqId -1: HMDS data farm connection is OK:apachmds | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | Warning 2106, reqId -1: HMDS data farm connection is OK:cashhmds | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | Warning 2106, reqId -1: HMDS data farm connection is OK:ushmds | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | Warning 2158, reqId -1: Sec-def data farm connection is OK:secdefhk | -
+2026-06-16 19:14:28 | INFO | ib_async.client | API connection ready | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | position: Position(account='DUM248652', contract=CFD(conId=143916318, symbol='EUR', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, avgCost=1.18805) | -
+2026-06-16 19:14:28 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.16008065, marketValue=-11600.81, averageCost=1.18805, unrealizedPNL=279.69, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:14:28 | INFO | ib_async.ib | Synchronization complete | -
+2026-06-16 19:14:29 | INFO | ai_core.genai.news_collector | NewsCollector fetched 20 articles. | -
+2026-06-16 19:14:29 | INFO | ai_core.strategy_engine.broker.ibkr_async_service | ✅ Successfully connected to IBKR TWS/Gateway | -
+2026-06-16 19:14:29 | INFO | ai_core.strategy_engine.broker.ibkr_async_service | Connected to accounts: ['DUM248652'] | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.order_manager | OrderManager initialized | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.position_tracker | PositionTracker initialized | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.circuit_breaker | Circuit breaker initialized | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.execution_engine | ================================================================================ | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.execution_engine | ExecutionEngine initialized | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.execution_engine | Execution mode: PAPER_TRADING | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.execution_engine | Broker connected: True | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.execution_engine | Risk manager: RiskManager | -
+2026-06-16 19:14:29 | INFO | ai_core.execution.execution_engine | ================================================================================ | -
+2026-06-16 19:14:29 | INFO | ai_core.strategy_engine.signal_router | SignalRouter initialized (execution_enabled=True) | -
+2026-06-16 19:14:30 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:14:30 | INFO | ai_core.genai.news_analyzer | 📰 News Sentiment for EURUSD: BEARISH (-0.6) | -
+2026-06-16 19:14:32 | INFO | ai_core.genai.llm_agent | ✅ AsyncOpenAI client initialized (configured for Groq) | -
+2026-06-16 19:14:33 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:14:33 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] NEUTRAL | HOLD | conf=72% | 786ms | -
+2026-06-16 19:15:34 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:15:34 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | HOLD | conf=62% | 1474ms | -
+2026-06-16 19:16:34 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:16:34 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | HOLD | conf=62% | 955ms | -
+2026-06-16 19:16:51 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.15978705, marketValue=-11597.87, averageCost=1.18805, unrealizedPNL=282.63, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:16:51 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.15978705, marketValue=-11597.87, averageCost=1.18805, unrealizedPNL=282.63, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:17:35 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:17:35 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | SELL | conf=82% | 753ms | -
+2026-06-16 19:18:35 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:18:35 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | HOLD | conf=72% | 626ms | -
+2026-06-16 19:19:36 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:19:36 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | SELL | conf=82% | 684ms | -
+2026-06-16 19:19:51 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.1596122, marketValue=-11596.12, averageCost=1.18805, unrealizedPNL=284.38, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:19:51 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.1596122, marketValue=-11596.12, averageCost=1.18805, unrealizedPNL=284.38, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:20:37 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:20:37 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | HOLD | conf=68% | 753ms | -
+2026-06-16 19:21:37 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:21:37 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | HOLD | conf=72% | 857ms | -
+2026-06-16 19:22:37 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:22:37 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | HOLD | conf=68% | 678ms | -
+2026-06-16 19:22:51 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.15954755, marketValue=-11595.48, averageCost=1.18805, unrealizedPNL=285.02, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:22:51 | INFO | ib_async.wrapper | updatePortfolio: PortfolioItem(contract=CFD(conId=143916318, symbol='EUR', right='0', currency='USD', localSymbol='EUR.USD', tradingClass='EUR.USD'), position=-10000.0, marketPrice=1.15954755, marketValue=-11595.48, averageCost=1.18805, unrealizedPNL=285.02, realizedPNL=0.0, account='DUM248652') | -
+2026-06-16 19:23:38 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:23:38 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | HOLD | conf=62% | 715ms | -
+2026-06-16 19:24:31 | INFO | ai_core.genai.news_collector | NewsCollector fetched 20 articles. | -
+2026-06-16 19:24:31 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:24:31 | INFO | ai_core.genai.news_analyzer | 📰 News Sentiment for EURUSD: BEARISH (-0.6) | -
+2026-06-16 19:24:39 | INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK" | -
+2026-06-16 19:24:39 | INFO | ai_core.genai.llm_agent | 🧠 AI [EURUSD] BEARISH | SELL | conf=82% | 727ms | -
+🧪 RizTest Strategy Initialized
+   Will generate up to 10 test signal(s)
+   Symbol: EUR/USD
+   Action: LONG (BUY)
+   Trigger: M1 candles (every 1 minute)
+🧪 RizTest Strategy Initialized
+   Will generate up to 10 test signal(s)
+   Symbol: EUR/USD
+   Action: LONG (BUY)
+   Trigger: M1 candles (every 1 minute)

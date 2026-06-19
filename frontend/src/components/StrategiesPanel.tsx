@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Brain, Play, Pause, Upload, Settings, TrendingUp, BarChart3, CloudLightning } from 'lucide-react';
 import { createWS } from '../services/ws';
+import { StrategyCodeModal } from './StrategyCodeModal';
 
 export function StrategiesPanel() {
   const [strategies, setStrategies] = useState<any[]>([]);
   const [wsService, setWsService] = useState<any>(null);
+  const [selectedStrategy, setSelectedStrategy] = useState<any>(null);
+  const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
 
   useEffect(() => {
     // Initialize WebSocket connection
@@ -64,6 +67,11 @@ export function StrategiesPanel() {
           : strategy
       )
     );
+  };
+
+  const handleConfigureClick = (strategy: any) => {
+    setSelectedStrategy(strategy);
+    setIsCodeModalOpen(true);
   };
 
   const getStrategyTypeIcon = (type: string) => {
@@ -244,7 +252,10 @@ export function StrategiesPanel() {
                 <button className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
                   Backtest
                 </button>
-                <button className="flex-1 py-2 px-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                <button
+                  onClick={() => handleConfigureClick(strategy)}
+                  className="flex-1 py-2 px-4 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                >
                   Configure
                 </button>
               </div>
@@ -252,9 +263,16 @@ export function StrategiesPanel() {
           )))}
       </div>
 
-      {/* Upload New Strategy */}
-      
-     
+      {/* Strategy Code Modal */}
+      {selectedStrategy && (
+        <StrategyCodeModal
+          isOpen={isCodeModalOpen}
+          onClose={() => setIsCodeModalOpen(false)}
+          strategyId={selectedStrategy.id}
+          strategyName={selectedStrategy.name}
+        />
+      )}
+
     </div>
   );
 }

@@ -1,0 +1,391 @@
+2026-06-18 15:33:02.516 | CRITICAL | __main__ | main:852 | Fatal error in main execution: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 83, in main
+    signal_router = SignalRouter()
+                    ^^^^^^^^^^^^^^
+TypeError: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+2026-06-18 15:33:02.521 | CRITICAL | __main__ | <module>:868 | Unhandled exception: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 863, in <module>
+    asyncio.run(main())
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 30, in run
+    return loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 314, in __step_run_and_handle_result
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 83, in main
+    signal_router = SignalRouter()
+                    ^^^^^^^^^^^^^^
+TypeError: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+2026-06-18 15:33:26.980 | CRITICAL | __main__ | main:852 | Fatal error in main execution: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 83, in main
+    signal_router = SignalRouter()
+                    ^^^^^^^^^^^^^^
+TypeError: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+2026-06-18 15:33:26.983 | CRITICAL | __main__ | <module>:868 | Unhandled exception: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 863, in <module>
+    asyncio.run(main())
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 30, in run
+    return loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 314, in __step_run_and_handle_result
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 83, in main
+    signal_router = SignalRouter()
+                    ^^^^^^^^^^^^^^
+TypeError: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+2026-06-18 15:35:27.842 | CRITICAL | __main__ | main:852 | Fatal error in main execution: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 83, in main
+    signal_router = SignalRouter()
+                    ^^^^^^^^^^^^^^
+TypeError: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+2026-06-18 15:35:27.845 | CRITICAL | __main__ | <module>:868 | Unhandled exception: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 863, in <module>
+    asyncio.run(main())
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 30, in run
+    return loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 314, in __step_run_and_handle_result
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 83, in main
+    signal_router = SignalRouter()
+                    ^^^^^^^^^^^^^^
+TypeError: SignalRouter.__init__() missing 1 required positional argument: 'ws_broadcaster'
+2026-06-18 15:42:17.883 | ERROR    | ibkr_streaming.ibkr_client | connect_ibkr:30 | ❌ Failed to connect to IBKR: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-18 15:42:17.895 | CRITICAL | __main__ | main:852 | Fatal error in main execution: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-18 15:42:17.899 | CRITICAL | __main__ | <module>:868 | Unhandled exception: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 863, in <module>
+    asyncio.run(main())
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 30, in run
+    return loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 314, in __step_run_and_handle_result
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-18 15:58:32.643 | ERROR    | ibkr_streaming.ibkr_client | connect_ibkr:30 | ❌ Failed to connect to IBKR: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-18 15:58:32.652 | CRITICAL | __main__ | main:856 | Fatal error in main execution: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError
+2026-06-18 15:58:32.654 | CRITICAL | __main__ | <module>:872 | Unhandled exception: 
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 287, in __await__
+    yield self  # This tells Task to wait for completion.
+    ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 385, in __wakeup
+    future.result()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 198, in result
+    raise exc
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 867, in <module>
+    asyncio.run(main())
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 30, in run
+    return loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 314, in __step_run_and_handle_result
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/run.py", line 75, in main
+    await tick_stream.initialize()
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/tick_stream.py", line 23, in initialize
+    self.ib = connect_ibkr()
+              ^^^^^^^^^^^^^^
+  File "/Users/rizwan/Devlopment/ai_quant_firm/fxharry-main/ibkr_streaming/ibkr_client.py", line 20, in connect_ibkr
+    ib.connect(IBKR_HOST, IBKR_PORT, clientId=IBKR_CLIENT_ID)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 369, in connect
+    return self._run(
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 428, in _run
+    return util.run(*awaitables, timeout=self.RequestTimeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/util.py", line 374, in run
+    result = loop.run_until_complete(task)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rizwan/Library/Python/3.12/lib/python/site-packages/nest_asyncio.py", line 98, in run_until_complete
+    return f.result()
+           ^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/futures.py", line 203, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 316, in __step_run_and_handle_result
+    result = coro.throw(exc)
+             ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/ib.py", line 2043, in connectAsync
+    await self.client.connectAsync(host, port, clientId, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/ib_async/client.py", line 228, in connectAsync
+    await asyncio.wait_for(self.apiStart, timeout)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/tasks.py", line 519, in wait_for
+    async with timeouts.timeout(timeout):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/timeouts.py", line 115, in __aexit__
+    raise TimeoutError from exc_val
+TimeoutError

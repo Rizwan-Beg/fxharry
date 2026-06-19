@@ -6,11 +6,15 @@ import { RiskManagement } from './components/RiskManagement';
 import { BacktestingPanel } from './components/BacktestingPanel';
 import { ConnectionStatus } from './components/ConnectionStatus';
 import { NotificationCenter } from './components/NotificationCenter';
+import { AIBrainPanel } from './components/AIBrainPanel';
+import { StrategyDiagnosticsPanel } from './components/StrategyDiagnosticsPanel';
+import { NewsPanel } from './components/NewsPanel';
 import { useLiveFeed } from './hooks/useLiveFeed';
 import { useMarketData } from './hooks/useMarketData';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isTradeHistoryOpen, setIsTradeHistoryOpen] = useState(false);
 
   // NEW: Selected symbol for chart switching
   const [selectedSymbol, setSelectedSymbol] = useState('EURUSD');
@@ -22,17 +26,25 @@ function App() {
     connectionStatus,
     subscribeToSymbol,
     unsubscribeFromSymbol,
-    accountData,    // From useLiveFeed (real)
-    tradeHistory,   // From useLiveFeed (real)
-    send            // For sending orders
+    accountData,
+    tradeHistory,
+    aiReasoning,
+    aiHistory,
+    newsSentiment,
+    riskAssessment,
+    riskLimits,
+    backtestResults,
+    isBacktesting,
+    strategyDiagnostics,
+    rejectedSignals,
+    strategies,
+    send
   } = useLiveFeed();
 
-  // We can still use useMarketData for riskAssessment if it's not in WS yet,
-  // but positions and accountData should come from WS if available.
+  // We can still use useMarketData for fallback
   const {
     // accountData: mockAccountData, // Shadowed
-    positions: mockPositions,     // Fallback
-    riskAssessment
+    positions: mockPositions     // Fallback
   } = useMarketData();
 
   const positions = accountData?.positions || mockPositions;
@@ -53,15 +65,12 @@ function App() {
     console.log("📤 [App] WebSocket send completed");
   };
 
-  // Request trade history on load/connect
+  // Request trade history and risk limits on load/connect
   React.useEffect(() => {
     if (connectionStatus.websocket) {
-      // This might happen too early if WS just opened, but let's try
-      // Ideally wait for 'welcome' or just send it.
-      // Or rely on periodic updates? Backend doesn't push history periodically.
-      // Let's send a request.
       setTimeout(() => {
         send("data_command", { command: "GET_TRADE_HISTORY" });
+        send("risk_command", { command: "GET_RISK_LIMITS" });
       }, 1000);
     }
   }, [connectionStatus.websocket, send]);
@@ -128,12 +137,13 @@ function App() {
         {/* Top Navigation */}
         <nav className="flex space-x-6 mt-4">
           {[
-            { id: 'dashboard', label: 'Dashboard' },
+            { id: 'dashboard',  label: 'Dashboard' },
+            { id: 'ai_brain',   label: '🧠 AI Brain' },
+            { id: 'scoring',    label: '📊 Scoring & Diagnostics' },
+            { id: 'news',       label: '📰 News Feed' },
             { id: 'strategies', label: 'Strategies Hub' },
-            { id: 'backtesting', label: 'Backtesting' },
-            { id: 'risk', label: 'Risk Management' }
-
-
+            { id: 'backtesting',label: 'Backtesting' },
+            { id: 'risk',       label: 'Risk Management' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -146,6 +156,16 @@ function App() {
               {tab.label}
             </button>
           ))}
+          {/* Trade History Button */}
+          <button
+            onClick={() => {
+              setActiveTab('dashboard');
+              setIsTradeHistoryOpen(true);
+            }}
+            className="px-4 py-2 rounded-lg font-medium transition-colors text-gray-400 hover:text-white hover:bg-gray-700"
+          >
+            Trade History
+          </button>
         </nav>
       </header>
 
@@ -163,14 +183,48 @@ function App() {
             accountData={accountData}
             tradeHistory={tradeHistory}
             onExecuteOrder={handleExecuteOrder}
+            isTradeHistoryOpen={isTradeHistoryOpen}
+            onCloseTradeHistory={() => setIsTradeHistoryOpen(false)}
           />
         )}
 
+        {activeTab === 'ai_brain' && (
+          <div className="max-w-3xl mx-auto">
+            <AIBrainPanel aiReasoning={aiReasoning} aiHistory={aiHistory} newsSentiment={newsSentiment} />
+          </div>
+        )}
+
+        {activeTab === 'scoring' && (
+          <div className="max-w-4xl mx-auto h-[80vh]">
+            <StrategyDiagnosticsPanel 
+              diagnostics={strategyDiagnostics} 
+              rejectedSignals={rejectedSignals} 
+            />
+          </div>
+        )}
+
+        {activeTab === 'news' && (
+          <NewsPanel newsSentiment={newsSentiment} />
+        )}
+
         {activeTab === 'strategies' && <StrategiesPanel />}
-        {activeTab === 'backtesting' && <BacktestingPanel />}
+        {activeTab === 'backtesting' && (
+          <BacktestingPanel 
+            backtestResults={backtestResults}
+            isBacktesting={isBacktesting}
+            onRunBacktest={(config) => {
+              send("backtest_command", { command: "RUN_BACKTEST", data: config });
+            }}
+            availableStrategies={strategies}
+          />
+        )}
         {activeTab === 'risk' && (
           <RiskManagement
             riskAssessment={riskAssessment}
+            riskLimits={riskLimits}
+            onSaveRiskLimits={(limits) => {
+              send("risk_command", { command: "UPDATE_RISK_LIMITS", data: limits });
+            }}
             positions={positions}
           />
         )}

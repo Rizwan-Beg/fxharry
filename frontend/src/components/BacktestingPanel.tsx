@@ -1,46 +1,38 @@
 import React, { useState } from 'react';
 import { BarChart3, Play, Calendar, DollarSign, TrendingUp, Download } from 'lucide-react';
 
-export function BacktestingPanel() {
+interface BacktestingPanelProps {
+  backtestResults?: any;
+  isBacktesting?: boolean;
+  onRunBacktest?: (config: any) => void;
+  availableStrategies?: any[];
+}
+
+export function BacktestingPanel({ backtestResults, isBacktesting, onRunBacktest, availableStrategies = [] }: BacktestingPanelProps) {
   const [backtestConfig, setBacktestConfig] = useState({
-    strategyId: 1,
-    startDate: '2024-01-01',
-    endDate: '2024-12-01',
+    strategyId: availableStrategies.length > 0 ? availableStrategies[0].id : 'apex',
+    startDate: '2025-01-01',
+    endDate: '2025-02-01',
     initialCapital: 100000,
-    symbols: ['EURUSD', 'GBPUSD', 'XAUUSD']
+    symbols: ['EURUSD'],
+    timeframe: '1h',
+    slStop: 0.02,
+    tpStop: 0.06,
+    fees: 0.0001,
+    leverage: 1
   });
 
-  const [backtestResults, setBacktestResults] = useState<any>(null);
-  const [isRunning, setIsRunning] = useState(false);
-
-  const mockResults = {
-    initial_capital: 100000,
-    final_capital: 125847.50,
-    total_return: 0.25847,
-    total_trades: 234,
-    winning_trades: 156,
-    losing_trades: 78,
-    win_rate: 0.667,
-    profit_factor: 1.85,
-    sharpe_ratio: 1.42,
-    max_drawdown: 0.087,
-    avg_trade_duration: 4.2
+  const runBacktest = () => {
+    if (onRunBacktest) {
+      onRunBacktest(backtestConfig);
+    }
   };
 
-  const runBacktest = async () => {
-    setIsRunning(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setBacktestResults(mockResults);
-      setIsRunning(false);
-    }, 3000);
-  };
-
-  const strategies = [
-    { id: 1, name: 'LSTM Forex Predictor' },
-    { id: 2, name: 'Mean Reversion Strategy' },
-    { id: 3, name: 'High-Frequency Scalper' }
+  const strategies = availableStrategies.length > 0 ? availableStrategies : [
+    { id: 'apex', name: 'Apex Multi-Timeframe' },
+    { id: 'smc', name: 'Smart Money Concepts' },
+    { id: 'ml', name: 'ML Predictor' },
+    { id: 'riztest', name: 'RizTest Strategy' }
   ];
 
   return (
@@ -64,7 +56,7 @@ export function BacktestingPanel() {
             </label>
             <select
               value={backtestConfig.strategyId}
-              onChange={(e) => setBacktestConfig(prev => ({ ...prev, strategyId: Number(e.target.value) }))}
+              onChange={(e) => setBacktestConfig(prev => ({ ...prev, strategyId: e.target.value }))}
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
             >
               {strategies.map(strategy => (
@@ -110,6 +102,80 @@ export function BacktestingPanel() {
               className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">
+              Timeframe
+            </label>
+            <select
+              value={backtestConfig.timeframe}
+              onChange={(e) => setBacktestConfig(prev => ({ ...prev, timeframe: e.target.value }))}
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
+            >
+              <option value="1m">1 Minute</option>
+              <option value="5m">5 Minutes</option>
+              <option value="15m">15 Minutes</option>
+              <option value="1h">1 Hour</option>
+              <option value="4h">4 Hours</option>
+              <option value="1d">1 Day</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">
+              Stop Loss (%)
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={backtestConfig.slStop * 100}
+              onChange={(e) => setBacktestConfig(prev => ({ ...prev, slStop: Number(e.target.value) / 100 }))}
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">
+              Take Profit (%)
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={backtestConfig.tpStop * 100}
+              onChange={(e) => setBacktestConfig(prev => ({ ...prev, tpStop: Number(e.target.value) / 100 }))}
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">
+              Fees/Spread (%)
+            </label>
+            <input
+              type="number"
+              step="0.001"
+              value={backtestConfig.fees * 100}
+              onChange={(e) => setBacktestConfig(prev => ({ ...prev, fees: Number(e.target.value) / 100 }))}
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">
+              Margin Leverage
+            </label>
+            <select
+              value={backtestConfig.leverage}
+              onChange={(e) => setBacktestConfig(prev => ({ ...prev, leverage: Number(e.target.value) }))}
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:border-blue-500 focus:outline-none"
+            >
+              <option value={1}>1:1 (No Leverage)</option>
+              <option value={10}>10:1 (10x Margin)</option>
+              <option value={30}>30:1 (30x Margin)</option>
+              <option value={50}>50:1 (50x Margin)</option>
+              <option value={100}>100:1 (100x Margin)</option>
+            </select>
+          </div>
         </div>
 
         <div className="mt-6">
@@ -146,17 +212,17 @@ export function BacktestingPanel() {
         <div className="flex space-x-3 mt-6">
           <button
             onClick={runBacktest}
-            disabled={isRunning}
+            disabled={isBacktesting}
             className="flex items-center space-x-2 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded-lg transition-colors"
           >
             <Play className="h-4 w-4" />
-            <span>{isRunning ? 'Running...' : 'Run Backtest'}</span>
+            <span>{isBacktesting ? 'Running VectorBT...' : 'Run VectorBT Backtest'}</span>
           </button>
         </div>
       </div>
 
       {/* Loading State */}
-      {isRunning && (
+      {isBacktesting && (
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
@@ -167,7 +233,15 @@ export function BacktestingPanel() {
       )}
 
       {/* Backtest Results */}
-      {backtestResults && (
+      {backtestResults && backtestResults.error && (
+        <div className="bg-red-900/50 border border-red-500 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-red-400 mb-2">Backtest Engine Error</h3>
+          <p className="text-gray-300">{backtestResults.error}</p>
+          <p className="text-gray-400 text-sm mt-4">Tip: Check if your date range has data or if the symbol is valid.</p>
+        </div>
+      )}
+
+      {backtestResults && !backtestResults.error && (
         <div className="space-y-6">
           {/* Performance Summary */}
           <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
@@ -200,15 +274,90 @@ export function BacktestingPanel() {
                 </div>
                 <div className="text-sm text-gray-400">Win Rate</div>
               </div>
+            </div>
 
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-400">
-                  {backtestResults.sharpe_ratio.toFixed(2)}
+            {/* Detailed Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6 pt-6 border-t border-gray-700">
+              <div>
+                <div className="text-sm text-gray-400">Profit Factor</div>
+                <div className="text-lg font-semibold">{backtestResults.profit_factor?.toFixed(2)}</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Max Drawdown</div>
+                <div className="text-lg font-semibold text-red-400">
+                  {(backtestResults.max_drawdown * 100).toFixed(1)}%
                 </div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Avg Trade Duration</div>
+                <div className="text-lg font-semibold">{backtestResults.average_trade_duration?.toFixed(1)}h</div>
+              </div>
+              <div>
                 <div className="text-sm text-gray-400">Sharpe Ratio</div>
+                <div className="text-lg font-semibold">{backtestResults.sharpe_ratio?.toFixed(2)}</div>
               </div>
             </div>
           </div>
+
+          {/* Broker Cost Analysis */}
+          {backtestResults.gross_profit !== undefined && (
+            <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold mb-4 text-orange-400 flex items-center">
+                <DollarSign className="w-5 h-5 mr-2" />
+                Broker Cost Analysis (IBKR Simulation)
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Cost Breakdown */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center pb-2 border-b border-gray-700">
+                    <span className="text-gray-400">Gross Profit Before Costs</span>
+                    <span className="font-medium text-green-400">+${backtestResults.gross_profit.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-2 border-b border-gray-700">
+                    <span className="text-gray-400">Total Commission Paid</span>
+                    <span className="font-medium text-red-400">-${backtestResults.total_fees_paid.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-2 border-b border-gray-700">
+                    <span className="text-gray-400">Total Slippage Cost</span>
+                    <span className="font-medium text-red-400">-${backtestResults.total_slippage_cost.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2">
+                    <span className="font-bold text-white">Net Profit After Costs</span>
+                    <span className={`font-bold ${backtestResults.net_profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {backtestResults.net_profit >= 0 ? '+' : ''}${backtestResults.net_profit.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-500 mt-2">
+                    Average Commission Per Trade: ${backtestResults.avg_commission_per_trade.toFixed(2)}
+                  </div>
+                </div>
+
+                {/* Return Impact Analysis */}
+                <div className="bg-gray-900 rounded-lg p-4 space-y-3 border border-gray-700">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Gross Return</span>
+                    <span className="font-medium text-green-400">+{backtestResults.gross_return_pct.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Commission Impact</span>
+                    <span className="font-medium text-red-400">-{backtestResults.commission_impact_pct.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Slippage Impact</span>
+                    <span className="font-medium text-red-400">-{backtestResults.slippage_impact_pct.toFixed(2)}%</span>
+                  </div>
+                  <div className="h-px bg-gray-700 w-full my-2"></div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold">Net Return</span>
+                    <span className={`font-bold ${backtestResults.net_return_pct >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {backtestResults.net_return_pct >= 0 ? '+' : ''}{backtestResults.net_return_pct.toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Detailed Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

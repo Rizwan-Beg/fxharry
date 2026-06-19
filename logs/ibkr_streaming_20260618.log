@@ -1,0 +1,96 @@
+2026-06-19 01:02:00.503 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811120 | Price: 1.14711
+2026-06-19 01:02:00.506 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:02:00.510 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811120 | Price: 1.32206
+2026-06-19 01:02:00.510 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:02:00.510 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811120 | Price: 161.3
+2026-06-19 01:02:00.510 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:02:00.510 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811120 | Price: 1.413485
+2026-06-19 01:02:00.510 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:03:00.611 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811180 | Price: 1.14711
+2026-06-19 01:03:00.611 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:03:00.619 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811180 | Price: 1.32206
+2026-06-19 01:03:00.620 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:03:00.620 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811180 | Price: 161.3
+2026-06-19 01:03:00.621 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:03:00.621 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811180 | Price: 1.413485
+2026-06-19 01:03:00.621 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:04:00.995 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811240 | Price: 1.14711
+2026-06-19 01:04:00.995 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:04:01.000 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811240 | Price: 1.32206
+2026-06-19 01:04:01.000 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:04:01.000 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811240 | Price: 161.3
+2026-06-19 01:04:01.001 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:04:01.002 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811240 | Price: 1.413485
+2026-06-19 01:04:01.002 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:05:00.096 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811300 | Price: 1.14711
+2026-06-19 01:05:00.096 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 5m | Bucket: 1781811300 | Price: 1.14711
+2026-06-19 01:05:00.097 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m, EURUSD:5m
+2026-06-19 01:05:00.307 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811300 | Price: 1.32206
+2026-06-19 01:05:00.307 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 5m | Bucket: 1781811300 | Price: 1.32206
+2026-06-19 01:05:00.307 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m, GBPUSD:5m
+2026-06-19 01:05:00.307 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811300 | Price: 161.3
+2026-06-19 01:05:00.307 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 5m | Bucket: 1781811300 | Price: 161.3
+2026-06-19 01:05:00.307 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m, USDJPY:5m
+2026-06-19 01:05:00.307 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811300 | Price: 1.413485
+2026-06-19 01:05:00.307 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 5m | Bucket: 1781811300 | Price: 1.413485
+2026-06-19 01:05:00.307 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m, USDCAD:5m
+2026-06-19 01:06:00.236 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811360 | Price: 1.14711
+2026-06-19 01:06:00.237 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:06:00.445 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811360 | Price: 1.32206
+2026-06-19 01:06:00.446 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:06:00.446 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811360 | Price: 161.3
+2026-06-19 01:06:00.447 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:06:00.447 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811360 | Price: 1.413485
+2026-06-19 01:06:00.448 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:07:00.885 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811420 | Price: 1.14711
+2026-06-19 01:07:00.885 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:07:00.895 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811420 | Price: 1.32206
+2026-06-19 01:07:00.895 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:07:00.895 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811420 | Price: 161.3
+2026-06-19 01:07:00.896 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:07:00.896 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811420 | Price: 1.413485
+2026-06-19 01:07:00.896 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:08:00.268 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811480 | Price: 1.14711
+2026-06-19 01:08:00.269 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:08:00.290 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811480 | Price: 1.32206
+2026-06-19 01:08:00.290 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:08:00.290 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811480 | Price: 161.3
+2026-06-19 01:08:00.290 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:08:00.290 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811480 | Price: 1.413485
+2026-06-19 01:08:00.290 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:09:00.312 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811540 | Price: 1.14711
+2026-06-19 01:09:00.314 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:09:00.523 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811540 | Price: 1.32206
+2026-06-19 01:09:00.523 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:09:00.523 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811540 | Price: 161.3
+2026-06-19 01:09:00.523 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:09:00.523 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811540 | Price: 1.413485
+2026-06-19 01:09:00.523 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:10:00.247 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811600 | Price: 1.14711
+2026-06-19 01:10:00.249 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 5m | Bucket: 1781811600 | Price: 1.14711
+2026-06-19 01:10:00.249 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m, EURUSD:5m
+2026-06-19 01:10:00.457 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811600 | Price: 1.32206
+2026-06-19 01:10:00.458 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 5m | Bucket: 1781811600 | Price: 1.32206
+2026-06-19 01:10:00.458 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m, GBPUSD:5m
+2026-06-19 01:10:00.458 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811600 | Price: 161.3
+2026-06-19 01:10:00.458 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 5m | Bucket: 1781811600 | Price: 161.3
+2026-06-19 01:10:00.458 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m, USDJPY:5m
+2026-06-19 01:10:00.459 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811600 | Price: 1.413485
+2026-06-19 01:10:00.459 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 5m | Bucket: 1781811600 | Price: 1.413485
+2026-06-19 01:10:00.459 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m, USDCAD:5m
+2026-06-19 01:11:00.461 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811660 | Price: 1.14711
+2026-06-19 01:11:00.462 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:11:00.668 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811660 | Price: 1.32206
+2026-06-19 01:11:00.668 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:11:00.668 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811660 | Price: 161.3
+2026-06-19 01:11:00.668 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:11:00.668 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811660 | Price: 1.413485
+2026-06-19 01:11:00.668 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
+2026-06-19 01:12:00.544 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: EURUSD | 1m | Bucket: 1781811720 | Price: 1.14711
+2026-06-19 01:12:00.545 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: EURUSD:1m
+2026-06-19 01:12:00.754 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: GBPUSD | 1m | Bucket: 1781811720 | Price: 1.32206
+2026-06-19 01:12:00.754 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: GBPUSD:1m
+2026-06-19 01:12:00.754 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDJPY | 1m | Bucket: 1781811720 | Price: 161.3
+2026-06-19 01:12:00.756 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDJPY:1m
+2026-06-19 01:12:00.756 | DEBUG    | ibkr_streaming.candle_engine | update:50 | New candle created: USDCAD | 1m | Bucket: 1781811720 | Price: 1.413485
+2026-06-19 01:12:00.756 | INFO     | ibkr_streaming.candle_engine | update:76 | New candles created: USDCAD:1m
